@@ -771,7 +771,72 @@ button:disabled {
 
     margin-bottom: 0;
 }
+/* ------------------------------------------------
+   COLLAPSIBLE EQUIPMENT SECTIONS
+   ------------------------------------------------ */
 
+.equipment-step details {
+    width: 100%;
+}
+
+.equipment-step summary {
+    padding: 10px 12px;
+
+    cursor: pointer;
+
+    border-bottom: 1px solid var(--border);
+
+    background: var(--panel-alt);
+
+    font-weight: bold;
+
+    user-select: none;
+}
+
+.equipment-step summary:hover {
+    background: var(--panel-bg);
+}
+
+.equipment-step details[open] > summary {
+    border-bottom-color: var(--accent);
+}
+
+.equipment-section-content {
+    padding: 12px;
+}
+
+#starting-package-section,
+#equipped-armor-section,
+#equipment-inventory-section {
+    padding: 0;
+}
+
+#starting-package-section > details,
+#equipped-armor-section > details,
+#equipment-inventory-section > details {
+    overflow: hidden;
+
+    border-radius: var(--radius);
+}
+
+.equipment-catalog-category {
+    margin-bottom: 10px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+
+    overflow: hidden;
+}
+
+.equipment-catalog-category > summary {
+    font-size: 1.05rem;
+}
+
+.equipment-catalog-category > .equipment-section-content {
+    padding-top: 4px;
+}
 
 /* ------------------------------------------------
    EQUIPMENT SUMMARY
@@ -943,16 +1008,6 @@ button:disabled {
 
 .equipment-catalog-category {
     margin-bottom: 24px;
-}
-
-.equipment-catalog-category > h4 {
-    margin: 0 0 10px;
-
-    padding-bottom: 5px;
-
-    border-bottom: 2px solid var(--accent);
-
-    font-size: 1.05rem;
 }
 
 .equipment-catalog-category > h5 {
