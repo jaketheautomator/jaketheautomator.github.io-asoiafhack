@@ -84,13 +84,15 @@ const character = {
         base: 10,
         additional: 0,
         xpBonus: 0,
-        wealthBonus: 0
+        wealthBonus: 0,
+        solo: false,
+        choices: []
     },
 
 
-    // ============================================================
-    // EQUIPMENT
-    // ============================================================
+// ============================================================
+// EQUIPMENT
+// ============================================================
 
     equipment: []
 };
@@ -663,6 +665,194 @@ function getBaseAvailableXP() {
     );
 }
 
+// ============================================================
+// OBLIGATION
+// ============================================================
+
+function getMaximumAdditionalObligation() {
+    return character.obligation.solo
+        ? GAME_DATA.characterCreation
+            .obligation.soloMaximumIncrease
+        : GAME_DATA.characterCreation
+            .obligation.normalMaximumIncrease;
+}
+
+
+function getObligationChoiceCount() {
+    return character.obligation.choices.length;
+}
+
+
+function getAdditionalObligation() {
+    return getObligationChoiceCount() * 5;
+}
+
+
+function canAddObligation() {
+    return (
+        getAdditionalObligation() + 5 <=
+        getMaximumAdditionalObligation()
+    );
+}
+
+
+/*
+ * Each +5 Obligation may be taken for either:
+ *
+ * +5 XP
+ * or
+ * additional starting wealth.
+ *
+ * Wealth follows the established breakpoints:
+ *
+ * +5 Obligation  = +1,000 stags
+ * +10 Obligation = +2,500 stags
+ *
+ * For solo characters who can continue beyond +10,
+ * each complete +10 block is worth +2,500 stags.
+ * An additional +5 is worth +1,000.
+ */
+function calculateObligationBonuses() {
+    const xpChoices =
+        character.obligation.choices.filter(
+            choice => choice === "xp"
+        ).length;
+
+    const wealthChoices =
+        character.obligation.choices.filter(
+            choice => choice === "wealth"
+        ).length;
+
+
+    character.obligation.additional =
+        getAdditionalObligation();
+
+
+    character.obligation.xpBonus =
+        xpChoices * 5;
+
+
+    const wealthPairs =
+        Math.floor(
+            wealthChoices / 2
+        );
+
+    const remainingWealthChoices =
+        wealthChoices % 2;
+
+
+    character.obligation.wealthBonus =
+        (wealthPairs * 2500) +
+        (remainingWealthChoices * 1000);
+}
+
+
+function addObligationChoice(type) {
+    if (!canAddObligation()) {
+        return false;
+    }
+
+    if (
+        type !== "xp" &&
+        type !== "wealth"
+    ) {
+        return false;
+    }
+
+    character.obligation.choices.push(type);
+
+    calculateObligationBonuses();
+
+    return true;
+}
+
+
+function canRemoveObligationChoice(index) {
+    return (
+        index >= 0 &&
+        index <
+            character.obligation.choices.length
+    );
+}
+
+
+function removeObligationChoice(index) {
+    if (
+        !canRemoveObligationChoice(index)
+    ) {
+        return false;
+    }
+
+
+    /*
+     * Removing XP Obligation cannot leave the character
+     * with negative XP.
+     */
+    const choice =
+        character.obligation.choices[index];
+
+    if (choice === "xp") {
+
+        character.obligation.choices.splice(
+            index,
+            1
+        );
+
+        calculateObligationBonuses();
+
+        if (getXPRemaining() < 0) {
+
+            character.obligation.choices.splice(
+                index,
+                0,
+                choice
+            );
+
+            calculateObligationBonuses();
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+    character.obligation.choices.splice(
+        index,
+        1
+    );
+
+    calculateObligationBonuses();
+
+    return true;
+}
+
+
+function setSoloCharacter(isSolo) {
+    if (isSolo) {
+        character.obligation.solo = true;
+        return true;
+    }
+
+
+    /*
+     * A character cannot switch out of Solo mode while
+     * carrying more than the normal additional Obligation
+     * limit.
+     */
+    if (
+        getAdditionalObligation() >
+        GAME_DATA.characterCreation
+            .obligation.normalMaximumIncrease
+    ) {
+        return false;
+    }
+
+
+    character.obligation.solo = false;
+
+    return true;
+}
 
 function getObligationBonusXP() {
     return character.obligation.xpBonus;
