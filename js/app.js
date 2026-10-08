@@ -85,7 +85,7 @@ function renderCurrentStep() {
             break;
 
         case "talents":
-            renderPlaceholder("Talents");
+            renderTalents();
             break;
 
         case "obligation":
@@ -1258,6 +1258,496 @@ function decreaseSkillRank(skillId) {
     renderSkills();
     updateSummary();
 }
+
+
+// ============================================================
+// TALENTS
+// ============================================================
+
+function renderTalents() {
+    const content =
+        document.getElementById("step-content");
+
+    content.innerHTML = "";
+
+    const section =
+        document.createElement("section");
+
+    section.className = "talents-section";
+
+
+    // --------------------------------------------------------
+    // Heading
+    // --------------------------------------------------------
+
+    const heading =
+        document.createElement("h2");
+
+    heading.textContent = "Talents";
+
+    section.appendChild(heading);
+
+
+    const instructions =
+        document.createElement("p");
+
+    instructions.textContent =
+        "Purchase talents using the Genesys talent pyramid. " +
+        "Each occupied tier must contain fewer talents than " +
+        "the tier below it. Ranked talents increase in tier " +
+        "with each additional rank.";
+
+    section.appendChild(instructions);
+
+
+    // --------------------------------------------------------
+    // Pyramid summary
+    // --------------------------------------------------------
+
+    const pyramid =
+        document.createElement("div");
+
+    pyramid.className = "talent-pyramid-summary";
+
+    for (let tier = 1; tier <= 5; tier++) {
+
+        const count =
+            getTalentCountByTier(tier);
+
+        const tierSummary =
+            document.createElement("div");
+
+        tierSummary.className =
+            "talent-pyramid-tier";
+
+        tierSummary.textContent =
+            `Tier ${tier}: ${count}`;
+
+        pyramid.appendChild(tierSummary);
+    }
+
+    section.appendChild(pyramid);
+
+
+    // --------------------------------------------------------
+    // Talent tiers
+    // --------------------------------------------------------
+
+    for (let tier = 1; tier <= 5; tier++) {
+
+        section.appendChild(
+            renderTalentTier(tier)
+        );
+    }
+
+
+    content.appendChild(section);
+}
+
+
+function renderTalentTier(tier) {
+    const tierSection =
+        document.createElement("section");
+
+    tierSection.className =
+        "talent-tier";
+
+
+    const heading =
+        document.createElement("h3");
+
+    const occupied =
+        getTalentCountByTier(tier);
+
+    heading.textContent =
+        `Tier ${tier} — ${occupied} Purchased`;
+
+    tierSection.appendChild(heading);
+
+
+    /*
+     * A talent belongs in this display tier if:
+     *
+     * 1. Its next purchase would occupy this tier, OR
+     * 2. It already has a purchased rank occupying this tier.
+     *
+     * This matters for ranked talents. Grit, for example,
+     * begins at Tier 1 but Grit II occupies Tier 2.
+     */
+    const relevantTalents =
+        GAME_DATA.talents.filter(
+            talent =>
+                talentHasRankAtTier(
+                    talent.id,
+                    tier
+                ) ||
+                getNextTalentTier(
+                    talent.id
+                ) === tier
+        );
+
+
+    if (relevantTalents.length === 0) {
+
+        const empty =
+            document.createElement("p");
+
+        empty.textContent =
+            "No talents available at this tier.";
+
+        tierSection.appendChild(empty);
+
+        return tierSection;
+    }
+
+
+    const list =
+        document.createElement("div");
+
+    list.className =
+        "talent-list";
+
+
+    for (const talent of relevantTalents) {
+
+        list.appendChild(
+            renderTalentCard(
+                talent,
+                tier
+            )
+        );
+    }
+
+
+    tierSection.appendChild(list);
+
+    return tierSection;
+}
+
+
+function talentHasRankAtTier(
+    talentId,
+    tier
+) {
+    const ranks =
+        getTalentRank(talentId);
+
+    for (
+        let rank = 1;
+        rank <= ranks;
+        rank++
+    ) {
+        if (
+            getTalentEffectiveTier(
+                talentId,
+                rank
+            ) === tier
+        ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+function getTalentRankAtTier(
+    talentId,
+    tier
+) {
+    const ranks =
+        getTalentRank(talentId);
+
+    for (
+        let rank = 1;
+        rank <= ranks;
+        rank++
+    ) {
+        if (
+            getTalentEffectiveTier(
+                talentId,
+                rank
+            ) === tier
+        ) {
+            return rank;
+        }
+    }
+
+    return null;
+}
+
+
+function renderTalentCard(
+    talent,
+    displayTier
+) {
+    const card =
+        document.createElement("div");
+
+    card.className =
+        "talent-card";
+
+
+    // --------------------------------------------------------
+    // Name
+    // --------------------------------------------------------
+
+    const title =
+        document.createElement("h4");
+
+    title.textContent =
+        talent.name;
+
+    card.appendChild(title);
+
+
+    // --------------------------------------------------------
+    // Metadata
+    // --------------------------------------------------------
+
+    const metadata =
+        document.createElement("div");
+
+    metadata.className =
+        "talent-metadata";
+
+
+    const purchasedRank =
+        getTalentRankAtTier(
+            talent.id,
+            displayTier
+        );
+
+
+    if (purchasedRank !== null) {
+
+        const purchased =
+            document.createElement("span");
+
+        if (talent.ranked) {
+            purchased.textContent =
+                `Purchased Rank ${purchasedRank}`;
+        } else {
+            purchased.textContent =
+                "Purchased";
+        }
+
+        metadata.appendChild(purchased);
+    }
+
+
+    const activation =
+        document.createElement("span");
+
+    activation.textContent =
+        talent.activation;
+
+    metadata.appendChild(activation);
+
+
+    if (talent.ranked) {
+
+        const ranked =
+            document.createElement("span");
+
+        ranked.textContent =
+            "Ranked";
+
+        metadata.appendChild(ranked);
+    }
+
+
+    card.appendChild(metadata);
+
+
+    // --------------------------------------------------------
+    // Description
+    // --------------------------------------------------------
+
+    const description =
+        document.createElement("p");
+
+    description.className =
+        "talent-description";
+
+    description.textContent =
+        talent.description;
+
+    card.appendChild(description);
+
+
+    // --------------------------------------------------------
+    // Prerequisites
+    // --------------------------------------------------------
+
+    if (
+        talent.prerequisites.length > 0
+    ) {
+        const prerequisites =
+            document.createElement("p");
+
+        prerequisites.className =
+            "talent-prerequisites";
+
+        const names =
+            talent.prerequisites.map(
+                prerequisiteId => {
+
+                    const prerequisite =
+                        getTalentById(
+                            prerequisiteId
+                        );
+
+                    return prerequisite
+                        ? prerequisite.name
+                        : prerequisiteId;
+                }
+            );
+
+        prerequisites.textContent =
+            `Prerequisite: ${names.join(", ")}`;
+
+        card.appendChild(prerequisites);
+    }
+
+
+    // --------------------------------------------------------
+    // Controls
+    // --------------------------------------------------------
+
+    const controls =
+        document.createElement("div");
+
+    controls.className =
+        "talent-controls";
+
+
+    /*
+     * The minus button is shown on the tier containing the
+     * talent's CURRENT HIGHEST RANK.
+     *
+     * Example:
+     *
+     * Grit I  -> Tier 1
+     * Grit II -> Tier 2
+     *
+     * Once Grit II exists, its refund control belongs with
+     * the Tier 2 instance rather than Grit I.
+     */
+    const currentRank =
+        getTalentRank(talent.id);
+
+    const currentHighestTier =
+        currentRank > 0
+            ? getTalentEffectiveTier(
+                talent.id,
+                currentRank
+            )
+            : null;
+
+
+    if (
+        currentRank > 0 &&
+        currentHighestTier === displayTier
+    ) {
+        const removeButton =
+            document.createElement("button");
+
+        removeButton.type =
+            "button";
+
+        removeButton.textContent =
+            "−";
+
+        removeButton.disabled =
+            !canRemoveTalent(
+                talent.id
+            );
+
+        removeButton.addEventListener(
+            "click",
+            () => {
+                removeTalent(
+                    talent.id
+                );
+
+                renderTalents();
+                updateSummary();
+            }
+        );
+
+        controls.appendChild(
+            removeButton
+        );
+    }
+
+
+    // --------------------------------------------------------
+    // Purchase control
+    // --------------------------------------------------------
+
+    const nextTier =
+        getNextTalentTier(
+            talent.id
+        );
+
+    const canShowPurchase =
+        nextTier === displayTier &&
+        (
+            talent.ranked ||
+            !hasTalent(talent.id)
+        );
+
+
+    if (canShowPurchase) {
+
+        const cost =
+            getNextTalentCost(
+                talent.id
+            );
+
+
+        const purchaseButton =
+            document.createElement(
+                "button"
+            );
+
+        purchaseButton.type =
+            "button";
+
+        purchaseButton.textContent =
+            `+ ${cost} XP`;
+
+        purchaseButton.disabled =
+            !canPurchaseTalent(
+                talent.id
+            );
+
+
+        purchaseButton.addEventListener(
+            "click",
+            () => {
+                purchaseTalent(
+                    talent.id
+                );
+
+                renderTalents();
+                updateSummary();
+            }
+        );
+
+
+        controls.appendChild(
+            purchaseButton
+        );
+    }
+
+
+    card.appendChild(controls);
+
+    return card;
+}
+
 
 // ================================================================
 // SUMMARY
