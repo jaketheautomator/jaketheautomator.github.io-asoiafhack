@@ -445,7 +445,7 @@ function canAddTalentAtTier(tier) {
     const resultingTierCount =
         getTalentCountByTier(tier) + 1;
 
-    return lowerTierCount >= resultingTierCount;
+    return lowerTierCount > resultingTierCount;
 }
 
 
@@ -541,9 +541,15 @@ function isTalentPyramidValid() {
         tier <= 5;
         tier++
     ) {
+        const currentTierCount =
+            getTalentCountByTier(tier);
+
+        const lowerTierCount =
+            getTalentCountByTier(tier - 1);
+
         if (
-            getTalentCountByTier(tier) >
-            getTalentCountByTier(tier - 1)
+            currentTierCount > 0 &&
+            lowerTierCount <= currentTierCount
         ) {
             return false;
         }
