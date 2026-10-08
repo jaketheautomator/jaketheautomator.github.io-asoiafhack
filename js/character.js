@@ -151,12 +151,8 @@ function getWeaknessCharacteristic() {
 function getCharacteristicIncreaseCost(id) {
     const current = character.characteristics[id];
 
-    /*
-     * Raising a weakened characteristic from 1 to 2
-     * removes the +20 XP weakness bonus.
-     */
     if (current === 1) {
-        return 20;
+        return 0;
     }
 
     return (current + 1) * 10;
@@ -174,23 +170,25 @@ function canIncreaseCharacteristic(id) {
         return false;
     }
 
-    const cost =
-        getCharacteristicIncreaseCost(id);
+    /*
+     * Raising a weakened characteristic from 1 to 2
+     * removes the +20 weakness bonus.
+     *
+     * Test the resulting XP pool directly rather than
+     * treating this as a characteristic XP purchase.
+     */
+    if (current === 1) {
+        const xpAfterRemovingWeakness =
+            getXPRemaining() -
+            GAME_DATA.characterCreation.weakness.bonusXP;
+
+        return xpAfterRemovingWeakness >= 0;
+    }
+
+    const cost = (current + 1) * 10;
 
     return cost <= getXPRemaining();
 }
-
-
-function canIncreaseCharacteristic(id) {
-    const current = character.characteristics[id];
-
-    if (
-        current >=
-        GAME_DATA.characterCreation
-            .characteristicMaximumAtCreation
-    ) {
-        return false;
-    }
 
     /*
      * Returning a weakened characteristic from 1 to 2
