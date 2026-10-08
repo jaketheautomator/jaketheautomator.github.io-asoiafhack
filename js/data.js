@@ -1319,11 +1319,1923 @@ const GAME_DATA = {
     }
 
 ],
+
+
+    
+// ============================================================
+// EQUIPMENT
+// ============================================================
+
+equipment: [
+
+    // ========================================================
+    // WEAPONS
+    // ========================================================
+
+    {
+        id: "club",
+        name: "Club",
+        category: "weapon",
+        skill: "melee-light",
+        damage: {
+            type: "brawn-plus",
+            value: 2
+        },
+        critical: 5,
+        range: "Engaged",
+        encumbrance: 2,
+        hardPoints: 0,
+        price: 50,
+        rarity: null,
+        qualities: []
+    },
+
+    {
+        id: "dagger",
+        name: "Dagger",
+        category: "weapon",
+        skill: "melee-light",
+        damage: {
+            type: "brawn-plus",
+            value: 1
+        },
+        critical: 2,
+        range: "Engaged",
+        encumbrance: 1,
+        hardPoints: 1,
+        price: 150,
+        rarity: null,
+        qualities: []
+    },
+
+    {
+        id: "sword",
+        name: "Sword",
+        category: "weapon",
+        skill: "melee-light",
+        damage: {
+            type: "brawn-plus",
+            value: 2
+        },
+        critical: 2,
+        range: "Engaged",
+        encumbrance: 1,
+        hardPoints: 1,
+        price: 225,
+        rarity: null,
+        qualities: [
+            {
+                name: "Defensive",
+                rating: 1
+            }
+        ]
+    },
+
+    {
+        id: "longsword",
+        name: "Longsword",
+        category: "weapon",
+        skill: "melee-light",
+        damage: {
+            type: "brawn-plus",
+            value: 3
+        },
+        critical: 2,
+        range: "Engaged",
+        encumbrance: 2,
+        hardPoints: 1,
+        price: 225,
+        rarity: null,
+        qualities: [
+            {
+                name: "Defensive",
+                rating: 1
+            }
+        ]
+    },
+
+    {
+        id: "axe",
+        name: "Axe",
+        category: "weapon",
+        skill: "melee-light",
+        damage: {
+            type: "brawn-plus",
+            value: 2
+        },
+        critical: 3,
+        range: "Engaged",
+        encumbrance: 2,
+        hardPoints: 1,
+        price: 175,
+        rarity: null,
+        qualities: [
+            {
+                name: "Vicious",
+                rating: 1
+            }
+        ]
+    },
+
+    {
+        id: "mace",
+        name: "Mace",
+        category: "weapon",
+        skill: "melee-light",
+        damage: {
+            type: "brawn-plus",
+            value: 2
+        },
+        critical: 4,
+        range: "Engaged",
+        encumbrance: 2,
+        hardPoints: 1,
+        price: 175,
+        rarity: null,
+        qualities: [
+            {
+                name: "Pierce",
+                rating: 2
+            }
+        ]
+    },
+
+    {
+        id: "warhammer",
+        name: "Warhammer",
+        category: "weapon",
+        skill: "melee-light",
+        damage: {
+            type: "brawn-plus",
+            value: 2
+        },
+        critical: 4,
+        range: "Engaged",
+        encumbrance: 2,
+        hardPoints: 1,
+        price: 225,
+        rarity: null,
+        qualities: [
+            {
+                name: "Pierce",
+                rating: 3
+            }
+        ]
+    },
+
+    {
+        id: "light-spear",
+        name: "Light Spear",
+        category: "weapon",
+        skill: "melee-light",
+        damage: {
+            type: "brawn-plus",
+            value: 2
+        },
+        critical: 4,
+        range: "Engaged",
+        thrownRange: "Short",
+        encumbrance: 2,
+        hardPoints: 1,
+        price: 125,
+        rarity: null,
+        qualities: [
+            {
+                name: "Accurate",
+                rating: 1
+            },
+            {
+                name: "Defensive",
+                rating: 1
+            }
+        ]
+    },
+
+    {
+        id: "spear",
+        name: "Spear",
+        category: "weapon",
+        skill: "melee-heavy",
+        damage: {
+            type: "brawn-plus",
+            value: 3
+        },
+        critical: 3,
+        range: "Engaged",
+        encumbrance: 2,
+        hardPoints: 1,
+        price: 225,
+        rarity: null,
+        qualities: [
+            {
+                name: "Defensive",
+                rating: 1
+            },
+            {
+                name: "Pierce",
+                rating: 1
+            },
+            {
+                name: "Brace"
+            }
+        ]
+    },
+
+    {
+        id: "greatsword",
+        name: "Greatsword",
+        category: "weapon",
+        skill: "melee-heavy",
+        damage: {
+            type: "brawn-plus",
+            value: 5
+        },
+        critical: 2,
+        range: "Engaged",
+        encumbrance: 3,
+        hardPoints: 2,
+        price: 275,
+        rarity: null,
+        qualities: [
+            {
+                name: "Defensive",
+                rating: 1
+            },
+            {
+                name: "Pierce",
+                rating: 1
+            },
+            {
+                name: "Unwieldy",
+                rating: 3
+            }
+        ]
+    },
+
+    {
+        id: "greataxe",
+        name: "Greataxe",
+        category: "weapon",
+        skill: "melee-heavy",
+        damage: {
+            type: "brawn-plus",
+            value: 5
+        },
+        critical: 3,
+        range: "Engaged",
+        encumbrance: 4,
+        hardPoints: 2,
+        price: 200,
+        rarity: null,
+        qualities: [
+            {
+                name: "Cumbersome",
+                rating: 3
+            },
+            {
+                name: "Vicious",
+                rating: 2
+            }
+        ]
+    },
+
+    {
+        id: "maul",
+        name: "Maul",
+        category: "weapon",
+        skill: "melee-heavy",
+        damage: {
+            type: "brawn-plus",
+            value: 6
+        },
+        critical: 4,
+        range: "Engaged",
+        encumbrance: 4,
+        hardPoints: 2,
+        price: 275,
+        rarity: null,
+        qualities: [
+            {
+                name: "Cumbersome",
+                rating: 3
+            },
+            {
+                name: "Inaccurate",
+                rating: 1
+            },
+            {
+                name: "Pierce",
+                rating: 3
+            }
+        ]
+    },
+
+    {
+        id: "polearm",
+        name: "Polearm",
+        category: "weapon",
+        skill: "melee-heavy",
+        damage: {
+            type: "brawn-plus",
+            value: 4
+        },
+        critical: 3,
+        range: "Engaged",
+        encumbrance: 3,
+        hardPoints: 2,
+        price: 250,
+        rarity: null,
+        qualities: [
+            {
+                name: "Defensive",
+                rating: 1
+            },
+            {
+                name: "Pierce",
+                rating: 1
+            }
+        ]
+    },
+
+    {
+        id: "pike",
+        name: "Pike",
+        category: "weapon",
+        skill: "melee-heavy",
+        damage: {
+            type: "brawn-plus",
+            value: 4
+        },
+        critical: 3,
+        range: "Short",
+        encumbrance: 4,
+        hardPoints: 2,
+        price: 200,
+        rarity: null,
+        qualities: [
+            {
+                name: "Cumbersome",
+                rating: 3
+            },
+            {
+                name: "Brace"
+            }
+        ],
+        description:
+            "Cannot be used to attack targets at Engaged range."
+    },
+
+    {
+        id: "lance",
+        name: "Lance",
+        category: "weapon",
+        skill: "melee-heavy",
+        damage: {
+            type: "brawn-plus",
+            value: 4
+        },
+        critical: 3,
+        range: "Engaged",
+        encumbrance: 4,
+        hardPoints: 2,
+        price: 250,
+        rarity: null,
+        qualities: [
+            {
+                name: "Cumbersome",
+                rating: 3
+            }
+        ],
+        description:
+            "Normally requires two hands. May be used one-handed while mounted. A mounted Charge with a lance gains Pierce 2."
+    },
+
+    {
+        id: "staff",
+        name: "Staff",
+        category: "weapon",
+        skill: "melee-heavy",
+        damage: {
+            type: "brawn-plus",
+            value: 2
+        },
+        critical: 4,
+        range: "Engaged",
+        encumbrance: 3,
+        hardPoints: 1,
+        price: 100,
+        rarity: null,
+        qualities: [
+            {
+                name: "Defensive",
+                rating: 1
+            }
+        ]
+    },
+
+    {
+        id: "shield",
+        name: "Shield",
+        category: "weapon",
+        skill: "melee-light",
+        damage: {
+            type: "brawn-plus",
+            value: 0
+        },
+        critical: 6,
+        range: "Engaged",
+        encumbrance: 2,
+        hardPoints: 1,
+        price: 60,
+        rarity: null,
+        qualities: [
+            {
+                name: "Defensive",
+                rating: 1
+            },
+            {
+                name: "Deflection",
+                rating: 1
+            },
+            {
+                name: "Inaccurate",
+                rating: 1
+            },
+            {
+                name: "Knockdown"
+            }
+        ]
+    },
+
+    {
+        id: "dart",
+        name: "Dart",
+        category: "weapon",
+        skill: "ranged",
+        damage: {
+            type: "brawn-plus",
+            value: 1
+        },
+        critical: 3,
+        range: "Short",
+        encumbrance: 1,
+        hardPoints: 0,
+        price: 20,
+        rarity: null,
+        qualities: [
+            {
+                name: "Limited Ammo",
+                rating: 1
+            }
+        ]
+    },
+
+    {
+        id: "throwing-knife",
+        name: "Throwing Knife",
+        category: "weapon",
+        skill: "ranged",
+        damage: {
+            type: "brawn-plus",
+            value: 1
+        },
+        critical: 2,
+        range: "Short",
+        encumbrance: 1,
+        hardPoints: 0,
+        price: 50,
+        rarity: null,
+        qualities: [
+            {
+                name: "Limited Ammo",
+                rating: 1
+            }
+        ]
+    },
+
+    {
+        id: "sling",
+        name: "Sling",
+        category: "weapon",
+        skill: "ranged",
+        damage: {
+            type: "fixed",
+            value: 4
+        },
+        critical: 4,
+        range: "Medium",
+        encumbrance: 1,
+        hardPoints: 0,
+        price: 25,
+        rarity: null,
+        qualities: [
+            {
+                name: "Concussive",
+                rating: 1
+            }
+        ]
+    },
+
+    {
+        id: "bow",
+        name: "Bow",
+        category: "weapon",
+        skill: "ranged",
+        damage: {
+            type: "fixed",
+            value: 7
+        },
+        critical: 3,
+        range: "Medium",
+        encumbrance: 2,
+        hardPoints: 2,
+        price: 500,
+        rarity: null,
+        qualities: []
+    },
+
+    {
+        id: "longbow",
+        name: "Longbow",
+        category: "weapon",
+        skill: "ranged",
+        damage: {
+            type: "fixed",
+            value: 8
+        },
+        critical: 3,
+        range: "Long",
+        encumbrance: 3,
+        hardPoints: 2,
+        price: 750,
+        rarity: null,
+        qualities: [
+            {
+                name: "Cumbersome",
+                rating: 3
+            }
+        ]
+    },
+
+    {
+        id: "light-crossbow",
+        name: "Light Crossbow",
+        category: "weapon",
+        skill: "ranged",
+        damage: {
+            type: "fixed",
+            value: 7
+        },
+        critical: 2,
+        range: "Medium",
+        encumbrance: 3,
+        hardPoints: 2,
+        price: 675,
+        rarity: null,
+        qualities: [
+            {
+                name: "Pierce",
+                rating: 1
+            },
+            {
+                name: "Prepare",
+                rating: 1
+            }
+        ]
+    },
+
+    {
+        id: "heavy-crossbow",
+        name: "Heavy Crossbow",
+        category: "weapon",
+        skill: "ranged",
+        damage: {
+            type: "fixed",
+            value: 9
+        },
+        critical: 2,
+        range: "Long",
+        encumbrance: 4,
+        hardPoints: 2,
+        price: 950,
+        rarity: null,
+        qualities: [
+            {
+                name: "Cumbersome",
+                rating: 3
+            },
+            {
+                name: "Pierce",
+                rating: 2
+            },
+            {
+                name: "Prepare",
+                rating: 2
+            }
+        ]
+    },
+
+
+    // ========================================================
+    // ARMOR
+    // ========================================================
+
+    {
+        id: "gambeson",
+        name: "Gambeson",
+        category: "armor",
+        defense: 0,
+        soak: 1,
+        encumbrance: 1,
+        hardPoints: 1,
+        price: 50,
+        rarity: null,
+        qualities: []
+    },
+
+    {
+        id: "brigandine",
+        name: "Brigandine",
+        category: "armor",
+        defense: 1,
+        soak: 1,
+        encumbrance: 3,
+        hardPoints: 2,
+        price: 275,
+        rarity: null,
+        qualities: []
+    },
+
+    {
+        id: "mail",
+        name: "Mail",
+        category: "armor",
+        defense: 0,
+        soak: 2,
+        encumbrance: 3,
+        hardPoints: 2,
+        price: 450,
+        rarity: null,
+        qualities: []
+    },
+
+    {
+        id: "half-plate",
+        name: "Half Plate",
+        category: "armor",
+        defense: 1,
+        soak: 2,
+        encumbrance: 4,
+        hardPoints: 2,
+        price: 900,
+        rarity: null,
+        qualities: []
+    },
+
+    {
+        id: "plate",
+        name: "Plate",
+        category: "armor",
+        defense: 1,
+        soak: 4,
+        encumbrance: 5,
+        hardPoints: 3,
+        price: 3000,
+        rarity: null,
+        qualities: []
+    },
+
+
+    // ========================================================
+    // GENERAL GEAR
+    // ========================================================
+
+    {
+        id: "backpack",
+        name: "Backpack",
+        category: "gear",
+        encumbrance: 0,
+        price: 50,
+        rarity: null,
+        description:
+            "Increases the character's Encumbrance Threshold by 4."
+    },
+
+    {
+        id: "bedroll",
+        name: "Bedroll",
+        category: "gear",
+        encumbrance: 1,
+        price: 15,
+        rarity: null
+    },
+
+    {
+        id: "blanket",
+        name: "Blanket",
+        category: "gear",
+        encumbrance: 1,
+        price: 5,
+        rarity: null
+    },
+
+    {
+        id: "small-tent",
+        name: "Small Tent",
+        category: "gear",
+        encumbrance: 3,
+        price: 30,
+        rarity: null
+    },
+
+    {
+        id: "large-tent",
+        name: "Large Tent",
+        category: "gear",
+        encumbrance: 5,
+        price: 75,
+        rarity: null
+    },
+
+    {
+        id: "waterskin",
+        name: "Waterskin",
+        category: "gear",
+        encumbrance: 0.5,
+        price: 5,
+        rarity: null,
+        description:
+            "Encumbrance listed assumes the waterskin is full."
+    },
+
+    {
+        id: "rope",
+        name: "Rope",
+        category: "gear",
+        encumbrance: 1,
+        price: 5,
+        rarity: null
+    },
+
+    {
+        id: "grappling-hook",
+        name: "Grappling Hook",
+        category: "gear",
+        encumbrance: 1,
+        price: 10,
+        rarity: null
+    },
+
+    {
+        id: "flint-and-steel",
+        name: "Flint and Steel",
+        category: "gear",
+        encumbrance: 0,
+        price: 10,
+        rarity: null
+    },
+
+    {
+        id: "torches",
+        name: "Torches",
+        category: "gear",
+        encumbrance: 1,
+        price: 1,
+        rarity: null
+    },
+
+    {
+        id: "lantern",
+        name: "Lantern",
+        category: "gear",
+        encumbrance: 1,
+        price: 50,
+        rarity: null
+    },
+
+    {
+        id: "lamp-oil",
+        name: "Lamp Oil",
+        category: "gear",
+        encumbrance: 0,
+        price: 2,
+        rarity: null
+    },
+
+    {
+        id: "rations",
+        name: "Rations, One Day",
+        category: "gear",
+        encumbrance: 0,
+        price: 2,
+        rarity: null
+    },
+
+    {
+        id: "cooking-kit",
+        name: "Cooking Kit",
+        category: "gear",
+        encumbrance: 2,
+        price: 15,
+        rarity: null
+    },
+
+    {
+        id: "winter-clothing",
+        name: "Winter Clothing",
+        category: "gear",
+        encumbrance: 1,
+        price: 100,
+        rarity: null,
+        description:
+            "When worn, removes up to 2 Setback dice from Survival or Resilience checks caused by cold weather."
+    },
+
+    {
+        id: "apothecary-kit",
+        name: "Apothecary Kit",
+        category: "gear",
+        encumbrance: 2,
+        price: 150,
+        rarity: null,
+        checkBonus: {
+            boostDice: 1,
+            skills: [
+                "medicine"
+            ],
+            condition:
+                "When preparing or using medicines, remedies, or similar treatments."
+        }
+    },
+
+    {
+        id: "healers-kit",
+        name: "Healer's Kit",
+        category: "gear",
+        encumbrance: 2,
+        price: 100,
+        rarity: null,
+        checkBonus: {
+            boostDice: 1,
+            skills: [
+                "medicine"
+            ],
+            condition:
+                "When treating injuries or illness."
+        }
+    },
+
+    {
+        id: "thieves-tools",
+        name: "Thieves' Tools",
+        category: "gear",
+        encumbrance: 1,
+        price: 75,
+        rarity: null,
+        checkBonus: {
+            boostDice: 1,
+            skills: [
+                "skulduggery"
+            ],
+            condition:
+                "When working with locks, traps, or similar mechanisms."
+        }
+    },
+
+    {
+        id: "climbing-gear",
+        name: "Climbing Gear",
+        category: "gear",
+        encumbrance: 1,
+        price: 20,
+        rarity: null,
+        checkBonus: {
+            boostDice: 1,
+            skills: [
+                "athletics"
+            ],
+            condition:
+                "When climbing."
+        }
+    },
+
+    {
+        id: "hunting-fishing-kit",
+        name: "Hunting & Fishing Kit",
+        category: "gear",
+        encumbrance: 2,
+        price: 40,
+        rarity: null,
+        checkBonus: {
+            boostDice: 1,
+            skills: [
+                "survival"
+            ],
+            condition:
+                "When hunting, trapping, or fishing."
+        }
+    },
+
+    {
+        id: "navigation-instruments",
+        name: "Navigation Instruments",
+        category: "gear",
+        encumbrance: 1,
+        price: 100,
+        rarity: null,
+        checkBonus: {
+            boostDice: 1,
+            skills: [
+                "navigation"
+            ],
+            condition:
+                "When navigating using the instruments."
+        }
+    },
+
+    {
+        id: "writing-kit",
+        name: "Writing Kit",
+        category: "gear",
+        encumbrance: 1,
+        price: 50,
+        rarity: null,
+        checkBonus: {
+            boostDice: 1,
+            skills: [],
+            condition:
+                "When a check materially benefits from writing, drafting, copying, or preparing documents."
+        }
+    },
+
+    {
+        id: "crowbar",
+        name: "Crowbar",
+        category: "gear",
+        encumbrance: 1,
+        price: 10,
+        rarity: null
+    },
+
+    {
+        id: "shovel",
+        name: "Shovel",
+        category: "gear",
+        encumbrance: 2,
+        price: 10,
+        rarity: null
+    },
+
+    {
+        id: "hammer-pitons",
+        name: "Hammer & Pitons",
+        category: "gear",
+        encumbrance: 1,
+        price: 10,
+        rarity: null
+    },
+
+
+    // ========================================================
+    // MOUNTS
+    // ========================================================
+
+    {
+        id: "pony",
+        name: "Pony",
+        category: "mount",
+        brawn: 2,
+        agility: 2,
+        soak: 2,
+        woundThreshold: 10,
+        encumbranceCapacity: 10,
+        price: 100,
+        rarity: null,
+        skills: {
+            athletics: 1,
+            resilience: 1
+        },
+        attacks: [
+            {
+                name: "Hooves",
+                skill: "brawl",
+                damage: {
+                    type: "brawn-plus",
+                    value: 2
+                },
+                critical: 4,
+                range: "Engaged",
+                qualities: [
+                    {
+                        name: "Knockdown"
+                    }
+                ]
+            }
+        ],
+        abilities: []
+    },
+
+    {
+        id: "mule",
+        name: "Mule",
+        category: "mount",
+        brawn: 3,
+        agility: 2,
+        soak: 3,
+        woundThreshold: 13,
+        encumbranceCapacity: 18,
+        price: 125,
+        rarity: null,
+        skills: {
+            athletics: 1,
+            resilience: 2,
+            survival: 1
+        },
+        attacks: [
+            {
+                name: "Hooves",
+                skill: "brawl",
+                damage: {
+                    type: "brawn-plus",
+                    value: 2
+                },
+                critical: 4,
+                range: "Engaged",
+                qualities: [
+                    {
+                        name: "Knockdown"
+                    }
+                ]
+            }
+        ],
+        abilities: []
+    },
+
+    {
+        id: "draft-horse",
+        name: "Draft Horse",
+        category: "mount",
+        brawn: 4,
+        agility: 2,
+        soak: 4,
+        woundThreshold: 18,
+        encumbranceCapacity: 25,
+        price: 200,
+        rarity: null,
+        skills: {
+            athletics: 2,
+            resilience: 2
+        },
+        attacks: [
+            {
+                name: "Hooves",
+                skill: "brawl",
+                damage: {
+                    type: "brawn-plus",
+                    value: 2
+                },
+                critical: 4,
+                range: "Engaged",
+                qualities: [
+                    {
+                        name: "Knockdown"
+                    }
+                ]
+            }
+        ],
+        abilities: []
+    },
+
+    {
+        id: "riding-horse",
+        name: "Riding Horse",
+        category: "mount",
+        brawn: 3,
+        agility: 3,
+        soak: 3,
+        woundThreshold: 13,
+        encumbranceCapacity: 15,
+        price: 250,
+        rarity: null,
+        skills: {
+            athletics: 1
+        },
+        attacks: [
+            {
+                name: "Hooves",
+                skill: "brawl",
+                damage: {
+                    type: "brawn-plus",
+                    value: 2
+                },
+                critical: 4,
+                range: "Engaged",
+                qualities: [
+                    {
+                        name: "Knockdown"
+                    }
+                ]
+            }
+        ],
+        abilities: []
+    },
+
+    {
+        id: "courser",
+        name: "Courser",
+        category: "mount",
+        brawn: 3,
+        agility: 4,
+        soak: 3,
+        woundThreshold: 14,
+        encumbranceCapacity: 13,
+        price: 750,
+        rarity: null,
+        skills: {
+            athletics: 2,
+            coordination: 2
+        },
+        attacks: [
+            {
+                name: "Hooves",
+                skill: "brawl",
+                damage: {
+                    type: "brawn-plus",
+                    value: 2
+                },
+                critical: 4,
+                range: "Engaged",
+                qualities: [
+                    {
+                        name: "Knockdown"
+                    }
+                ]
+            }
+        ],
+        abilities: [
+            {
+                name: "Battle-Trained",
+                description:
+                    "May willingly enter Engaged range with hostile characters and may be directed to make attacks."
+            },
+            {
+                name: "Swift",
+                description:
+                    "Add 1 Boost die to Riding checks involving speed, pursuit, escape, or maneuvering at a gallop."
+            }
+        ]
+    },
+
+    {
+        id: "destrier",
+        name: "Destrier",
+        category: "mount",
+        brawn: 4,
+        agility: 3,
+        soak: 4,
+        woundThreshold: 18,
+        encumbranceCapacity: 20,
+        price: 1500,
+        rarity: null,
+        skills: {
+            athletics: 2,
+            brawl: 2,
+            discipline: 2,
+            resilience: 2
+        },
+        attacks: [
+            {
+                name: "Hooves",
+                skill: "brawl",
+                damage: {
+                    type: "brawn-plus",
+                    value: 2
+                },
+                critical: 4,
+                range: "Engaged",
+                qualities: [
+                    {
+                        name: "Knockdown"
+                    }
+                ]
+            }
+        ],
+        abilities: [
+            {
+                name: "Warhorse",
+                description:
+                    "Ignores Setback dice imposed by ordinary combat distractions. May willingly enter Engaged range with hostile characters and may be directed to make attacks."
+            },
+            {
+                name: "Powerful Charge",
+                description:
+                    "When the destrier performs a Charge, its Hooves attack gains +1 damage."
+            }
+        ]
+    },
+
+
+    // ========================================================
+    // TACK
+    // ========================================================
+
+    {
+        id: "basic-tack",
+        name: "Bridle & Basic Tack",
+        category: "tack",
+        encumbrance: 1,
+        price: 20,
+        rarity: null
+    },
+
+    {
+        id: "riding-saddle",
+        name: "Riding Saddle",
+        category: "tack",
+        encumbrance: 3,
+        price: 50,
+        rarity: null
+    },
+
+    {
+        id: "war-saddle",
+        name: "War Saddle",
+        category: "tack",
+        encumbrance: 4,
+        price: 150,
+        rarity: null
+    },
+
+    {
+        id: "saddlebags",
+        name: "Saddlebags",
+        category: "tack",
+        encumbrance: 2,
+        price: 25,
+        rarity: null
+    },
+
+    {
+        id: "pack-saddle",
+        name: "Pack Saddle",
+        category: "tack",
+        encumbrance: 4,
+        price: 40,
+        rarity: null
+    },
+
+    {
+        id: "horseshoes",
+        name: "Horseshoes",
+        category: "tack",
+        encumbrance: 0,
+        price: 10,
+        rarity: null
+    },
+
+
+    // ========================================================
+    // BARDING
+    // ========================================================
+
+    {
+        id: "padded-barding",
+        name: "Padded Barding",
+        category: "barding",
+        defense: 0,
+        soak: 1,
+        encumbrance: 4,
+        price: 100,
+        rarity: null
+    },
+
+    {
+        id: "mail-barding",
+        name: "Mail Barding",
+        category: "barding",
+        defense: 0,
+        soak: 2,
+        encumbrance: 6,
+        price: 500,
+        rarity: null
+    },
+
+    {
+        id: "plate-barding",
+        name: "Plate Barding",
+        category: "barding",
+        defense: 1,
+        soak: 3,
+        encumbrance: 8,
+        price: 1500,
+        rarity: null
+    },
+
+
+    // ========================================================
+    // VEHICLES
+    // ========================================================
+
+    {
+        id: "cart",
+        name: "Cart",
+        category: "vehicle",
+        encumbrance: null,
+        price: 150,
+        rarity: null
+    },
+
+    {
+        id: "wagon",
+        name: "Wagon",
+        category: "vehicle",
+        encumbrance: null,
+        price: 200,
+        rarity: null
+    },
+
+    {
+        id: "rowboat",
+        name: "Rowboat",
+        category: "vehicle",
+        encumbrance: null,
+        price: 150,
+        rarity: null
+    },
+
+
+    // ========================================================
+    // WEAPON ATTACHMENTS
+    // ========================================================
+
+    {
+        id: "balanced-hilt",
+        name: "Balanced Hilt",
+        category: "attachment",
+        attachmentType: "weapon",
+        hardPointCost: 1,
+        price: 1000,
+        rarity: null,
+        purchasable: true,
+        description:
+            "The weapon gains Accurate 1, or increases its existing Accurate rating by 1."
+    },
+
+    {
+        id: "duelist-cross-guard",
+        name: "Duelist Cross Guard",
+        category: "attachment",
+        attachmentType: "weapon",
+        hardPointCost: 1,
+        price: 800,
+        rarity: null,
+        purchasable: true,
+        description:
+            "When an opponent makes a melee attack against the wielder and generates at least 1 uncanceled Threat, the wielder may suffer 1 strain to add 2 Threat to the attack's results."
+    },
+
+    {
+        id: "razor-edge",
+        name: "Razor Edge",
+        category: "attachment",
+        attachmentType: "weapon",
+        hardPointCost: 1,
+        price: 1250,
+        rarity: null,
+        purchasable: true,
+        description:
+            "The weapon gains Pierce 2, or increases an existing Pierce rating by 1. Reduce its Critical rating by 1, to a minimum of 1."
+    },
+
+    {
+        id: "recurve-limbs",
+        name: "Recurve Limbs",
+        category: "attachment",
+        attachmentType: "weapon",
+        hardPointCost: 1,
+        price: 300,
+        rarity: null,
+        purchasable: true,
+        description:
+            "For bows and crossbows. The weapon gains Pierce 2, or increases an existing Pierce rating by 1. It also gains or increases Unwieldy as appropriate."
+    },
+
+    {
+        id: "serrated-edge",
+        name: "Serrated Edge",
+        category: "attachment",
+        attachmentType: "weapon",
+        hardPointCost: 1,
+        price: 75,
+        rarity: null,
+        purchasable: true,
+        description:
+            "For bladed weapons. The weapon gains Vicious 1, or increases its existing Vicious rating by 1."
+    },
+
+    {
+        id: "superior-weapon-customization",
+        name: "Superior Weapon Customization",
+        category: "attachment",
+        attachmentType: "weapon",
+        hardPointCost: 1,
+        price: 750,
+        rarity: null,
+        purchasable: true,
+        description:
+            "The weapon gains the Superior quality."
+    },
+
+    {
+        id: "weapon-sling",
+        name: "Weapon Sling",
+        category: "attachment",
+        attachmentType: "weapon",
+        hardPointCost: 1,
+        price: 25,
+        rarity: null,
+        purchasable: true,
+        description:
+            "Reduces the attached weapon's Encumbrance by 2, to a minimum of 0."
+    },
+
+    {
+        id: "weighted-head",
+        name: "Weighted Head",
+        category: "attachment",
+        attachmentType: "weapon",
+        hardPointCost: 1,
+        price: 250,
+        rarity: null,
+        purchasable: true,
+        description:
+            "The weapon gains +2 damage and gains or increases Cumbersome as appropriate."
+    },
+
+    {
+        id: "reinforced-haft",
+        name: "Reinforced Haft",
+        category: "attachment",
+        attachmentType: "weapon",
+        hardPointCost: 1,
+        price: 400,
+        rarity: null,
+        purchasable: true,
+        description:
+            "The weapon gains Defensive 1, or increases its existing Defensive rating by 1."
+    },
+
+    {
+        id: "valyrian-steel",
+        name: "Valyrian Steel",
+        category: "attachment",
+        attachmentType: "weapon",
+        hardPointCost: 0,
+        price: null,
+        rarity: null,
+        purchasable: false,
+        description:
+            "For weapons with a plausible steel striking component. The weapon gains Superior, +2 damage, and Vicious 2. Reduce its Encumbrance by 1, to a minimum of 1. Valyrian Steel does not grant Pierce and does not stack with incompatible edge, point, or material modifications."
+    },
+
+
+    // ========================================================
+    // ARMOR ATTACHMENTS
+    // ========================================================
+
+    {
+        id: "deflective-plating",
+        name: "Deflective Plating",
+        category: "attachment",
+        attachmentType: "armor",
+        hardPointCost: 1,
+        price: 450,
+        rarity: null,
+        purchasable: true,
+        description:
+            "The armor grants +1 ranged defense."
+    },
+
+    {
+        id: "intimidating-visage",
+        name: "Intimidating Visage",
+        category: "attachment",
+        attachmentType: "armor",
+        hardPointCost: 0,
+        price: 236,
+        rarity: null,
+        purchasable: true,
+        description:
+            "Add 1 Boost die to Coercion checks and 1 Setback die to Charm checks while wearing the armor."
+    },
+
+    {
+        id: "reinforced-plating",
+        name: "Reinforced Plating",
+        category: "attachment",
+        attachmentType: "armor",
+        hardPointCost: 2,
+        price: 8000,
+        rarity: null,
+        purchasable: true,
+        description:
+            "The armor gains the Reinforced quality and its Encumbrance increases by 1."
+    },
+
+    {
+        id: "gilded",
+        name: "Gilded",
+        category: "attachment",
+        attachmentType: "armor",
+        hardPointCost: 0,
+        price: 3000,
+        rarity: null,
+        purchasable: true,
+        description:
+            "Add 1 Boost die to Charm, Negotiation, and Leadership checks while wearing the armor."
+    },
+
+    {
+        id: "spikes",
+        name: "Spikes",
+        category: "attachment",
+        attachmentType: "armor",
+        hardPointCost: 1,
+        price: 1200,
+        rarity: null,
+        purchasable: true,
+        description:
+            "When targeted by a melee attack, spend 3 Threat or 1 Despair generated by the attacker's check to inflict 3 wounds on the attacker."
+    },
+
+    {
+        id: "fine-armor-fitting",
+        name: "Fine Armor Fitting",
+        category: "attachment",
+        attachmentType: "armor",
+        hardPointCost: 1,
+        price: 750,
+        rarity: null,
+        purchasable: true,
+        description:
+            "Reduce the armor's Encumbrance by 1 while worn, to a minimum of 1."
+    },
+
+    {
+        id: "concealed-armor",
+        name: "Concealed Armor",
+        category: "attachment",
+        attachmentType: "armor",
+        hardPointCost: 1,
+        price: 250,
+        rarity: null,
+        purchasable: true,
+        description:
+            "Add 1 Boost die to checks made to conceal the armor."
+    }
+],
+
+    
+// ============================================================
+// STARTING EQUIPMENT PACKAGES
+// ============================================================
+
+startingEquipmentPackages: [
+
+    // --------------------------------------------------------
+    // WARRIOR
+    // --------------------------------------------------------
+
+    {
+        id: "knight",
+        name: "Knight's Kit",
+        items: [
+            { id: "riding-horse", quantity: 1 },
+            { id: "riding-saddle", quantity: 1 },
+            { id: "basic-tack", quantity: 1 },
+            { id: "lance", quantity: 1 },
+            { id: "sword", quantity: 1 },
+            { id: "gambeson", quantity: 1 }
+        ]
+    },
+
+    {
+        id: "man-at-arms",
+        name: "Man-at-Arms' Kit",
+        items: [
+            { id: "longsword", quantity: 1 },
+            { id: "shield", quantity: 1 },
+            { id: "gambeson", quantity: 1 },
+            { id: "bedroll", quantity: 1 },
+            { id: "waterskin", quantity: 1 },
+            { id: "flint-and-steel", quantity: 1 }
+        ]
+    },
+
+    {
+        id: "archer-hunter",
+        name: "Archer's Kit",
+        items: [
+            { id: "bow", quantity: 1 },
+            { id: "dagger", quantity: 1 },
+            { id: "gambeson", quantity: 1 },
+            { id: "hunting-fishing-kit", quantity: 1 },
+            { id: "bedroll", quantity: 1 },
+            { id: "waterskin", quantity: 1 }
+        ]
+    },
+
+
+    // --------------------------------------------------------
+    // COMMANDER
+    // --------------------------------------------------------
+
+    {
+        id: "captain",
+        name: "Captain's Kit",
+        items: [
+            { id: "sword", quantity: 1 },
+            { id: "gambeson", quantity: 1 },
+            { id: "navigation-instruments", quantity: 1 },
+            { id: "writing-kit", quantity: 1 },
+            { id: "bedroll", quantity: 1 },
+            { id: "waterskin", quantity: 1 }
+        ]
+    },
+
+    {
+        id: "castellan",
+        name: "Castellan's Kit",
+        items: [
+            { id: "sword", quantity: 1 },
+            { id: "brigandine", quantity: 1 },
+            { id: "writing-kit", quantity: 1 },
+            { id: "lantern", quantity: 1 },
+            { id: "flint-and-steel", quantity: 1 }
+        ]
+    },
+
+    {
+        id: "marshal",
+        name: "Marshal's Kit",
+        items: [
+            { id: "riding-horse", quantity: 1 },
+            { id: "riding-saddle", quantity: 1 },
+            { id: "basic-tack", quantity: 1 },
+            { id: "sword", quantity: 1 },
+            { id: "shield", quantity: 1 },
+            { id: "gambeson", quantity: 1 }
+        ]
+    },
+
+
+    // --------------------------------------------------------
+    // COURTIER
+    // --------------------------------------------------------
+
+    {
+        id: "diplomat",
+        name: "Diplomat's Kit",
+        items: [
+            { id: "sword", quantity: 1 },
+            { id: "gambeson", quantity: 1 },
+            { id: "writing-kit", quantity: 1 },
+            { id: "winter-clothing", quantity: 1 }
+        ]
+    },
+
+    {
+        id: "schemer",
+        name: "Schemer's Kit",
+        items: [
+            { id: "dagger", quantity: 1 },
+            { id: "brigandine", quantity: 1 },
+            { id: "writing-kit", quantity: 1 },
+            { id: "lantern", quantity: 1 },
+            { id: "thieves-tools", quantity: 1 }
+        ]
+    },
+
+    {
+        id: "assassin",
+        name: "Assassin's Kit",
+        items: [
+            { id: "dagger", quantity: 1 },
+            { id: "throwing-knife", quantity: 2 },
+            { id: "gambeson", quantity: 1 },
+            { id: "thieves-tools", quantity: 1 },
+            { id: "rope", quantity: 1 },
+            { id: "grappling-hook", quantity: 1 }
+        ]
+    },
+
+
+    // --------------------------------------------------------
+    // ROGUE
+    // --------------------------------------------------------
+
+    {
+        id: "thief",
+        name: "Thief's Kit",
+        items: [
+            { id: "dagger", quantity: 1 },
+            { id: "thieves-tools", quantity: 1 },
+            { id: "rope", quantity: 1 },
+            { id: "grappling-hook", quantity: 1 },
+            { id: "crowbar", quantity: 1 },
+            { id: "flint-and-steel", quantity: 1 }
+        ]
+    },
+
+    {
+        id: "spy",
+        name: "Spy's Kit",
+        items: [
+            { id: "dagger", quantity: 1 },
+            { id: "gambeson", quantity: 1 },
+            { id: "writing-kit", quantity: 1 },
+            { id: "thieves-tools", quantity: 1 },
+            { id: "winter-clothing", quantity: 1 }
+        ]
+    },
+
+    {
+        id: "outlaw",
+        name: "Outlaw's Kit",
+        items: [
+            { id: "sword", quantity: 1 },
+            { id: "bow", quantity: 1 },
+            { id: "gambeson", quantity: 1 },
+            { id: "bedroll", quantity: 1 },
+            { id: "waterskin", quantity: 1 }
+        ]
+    },
+
+
+    // --------------------------------------------------------
+    // SCHOLAR
+    // --------------------------------------------------------
+
+    {
+        id: "engineer",
+        name: "Engineer's Kit",
+        items: [
+            { id: "club", quantity: 1 },
+            { id: "gambeson", quantity: 1 },
+            { id: "hammer-pitons", quantity: 1 },
+            { id: "shovel", quantity: 1 },
+            { id: "crowbar", quantity: 1 },
+            { id: "writing-kit", quantity: 1 }
+        ]
+    },
+
+    {
+        id: "physician",
+        name: "Physician's Kit",
+        items: [
+            { id: "dagger", quantity: 1 },
+            { id: "gambeson", quantity: 1 },
+            { id: "healers-kit", quantity: 1 },
+            { id: "apothecary-kit", quantity: 1 },
+            { id: "writing-kit", quantity: 1 }
+        ]
+    },
+
+    {
+        id: "devout",
+        name: "Devout's Kit",
+        items: [
+            { id: "staff", quantity: 1 },
+            { id: "gambeson", quantity: 1 },
+            { id: "writing-kit", quantity: 1 },
+            { id: "winter-clothing", quantity: 1 }
+        ]
+    },
+
+
+    // --------------------------------------------------------
+    // EXPERT
+    // --------------------------------------------------------
+
+    {
+        id: "artisan",
+        name: "Artisan's Kit",
+        items: [
+            { id: "club", quantity: 1 },
+            { id: "gambeson", quantity: 1 },
+            { id: "hammer-pitons", quantity: 1 },
+            { id: "crowbar", quantity: 1 },
+            { id: "writing-kit", quantity: 1 }
+        ]
+    },
+
+    {
+        id: "steward",
+        name: "Steward's Kit",
+        items: [
+            { id: "riding-horse", quantity: 1 },
+            { id: "riding-saddle", quantity: 1 },
+            { id: "basic-tack", quantity: 1 },
+            { id: "sword", quantity: 1 },
+            { id: "writing-kit", quantity: 1 },
+            { id: "winter-clothing", quantity: 1 }
+        ]
+    },
+
+    {
+        id: "sailor",
+        name: "Sailor's Kit",
+        items: [
+            { id: "club", quantity: 1 },
+            { id: "dagger", quantity: 1 },
+            { id: "rope", quantity: 1 },
+            { id: "grappling-hook", quantity: 1 },
+            { id: "navigation-instruments", quantity: 1 },
+            { id: "bedroll", quantity: 1 },
+            { id: "waterskin", quantity: 1 }
+        ]
+    },
+
+
+    // --------------------------------------------------------
+    // SCOUT
+    // --------------------------------------------------------
+
+    {
+        id: "raider",
+        name: "Raider's Kit",
+        items: [
+            { id: "axe", quantity: 1 },
+            { id: "shield", quantity: 1 },
+            { id: "gambeson", quantity: 1 },
+            { id: "bedroll", quantity: 1 },
+            { id: "waterskin", quantity: 1 },
+            { id: "rope", quantity: 1 }
+        ]
+    },
+
+    {
+        id: "messenger",
+        name: "Messenger's Kit",
+        items: [
+            { id: "riding-horse", quantity: 1 },
+            { id: "riding-saddle", quantity: 1 },
+            { id: "basic-tack", quantity: 1 },
+            { id: "sword", quantity: 1 },
+            { id: "winter-clothing", quantity: 1 },
+            { id: "bedroll", quantity: 1 },
+            { id: "waterskin", quantity: 1 }
+        ]
+    }
+],
+
+
+// ============================================================
+// SPECIALIZATION EQUIPMENT PACKAGE MAPPING
+// ============================================================
+
+specializationEquipmentPackages: {
+
+    // Warrior
+    "knight": "knight",
+    "man-at-arms": "man-at-arms",
+    "archer": "archer-hunter",
+
+    // Commander
+    "captain": "captain",
+    "castellan": "castellan",
+    "marshal": "marshal",
+
+    // Courtier
+    "diplomat": "diplomat",
+    "schemer": "schemer",
+    "assassin": "assassin",
+
+    // Rogue
+    "thief": "thief",
+    "spy": "spy",
+    "outlaw": "outlaw",
+
+    // Scholar
+    "engineer": "engineer",
+    "physician": "physician",
+    "devout": "devout",
+
+    // Expert
+    "artisan": "artisan",
+    "steward": "steward",
+    "sailor": "sailor",
+
+    // Scout
+    "hunter": "archer-hunter",
+    "raider": "raider",
+    "messenger": "messenger"
+},
     
     
-    // ============================================================
-    // CAREERS
-    // ============================================================
+// ============================================================
+// CAREERS
+// ============================================================
 
     careers: [
 
@@ -1751,4 +3663,67 @@ function getTalentsByTier(tier) {
     return GAME_DATA.talents.filter(
         talent => talent.tier === tier
     );
+}
+
+
+function getEquipmentById(equipmentId) {
+    return GAME_DATA.equipment.find(
+        item => item.id === equipmentId
+    ) || null;
+}
+
+function getEquipmentByCategory(category) {
+    return GAME_DATA.equipment.filter(
+        item => item.category === category
+    );
+}
+
+function getStartingEquipmentPackage(packageId) {
+    return GAME_DATA.startingEquipmentPackages.find(
+        equipmentPackage =>
+            equipmentPackage.id === packageId
+    ) || null;
+}
+
+function getSpecializationEquipmentPackage(
+    specializationId
+) {
+    const packageId =
+        GAME_DATA.specializationEquipmentPackages[
+            specializationId
+        ];
+
+    if (!packageId) return null;
+
+    return getStartingEquipmentPackage(
+        packageId
+    );
+}
+
+function getStartingEquipmentPackageCost(
+    packageId
+) {
+    const equipmentPackage =
+        getStartingEquipmentPackage(packageId);
+
+    if (!equipmentPackage) return null;
+
+    let total = 0;
+
+    for (const packageItem of
+        equipmentPackage.items) {
+
+        const item =
+            getEquipmentById(packageItem.id);
+
+        if (!item || item.price === null) {
+            return null;
+        }
+
+        total +=
+            item.price *
+            packageItem.quantity;
+    }
+
+    return total;
 }
