@@ -81,7 +81,7 @@ function renderCurrentStep() {
             break;
 
         case "skills":
-            renderPlaceholder("Skills");
+            renderSkills();
             break;
 
         case "talents":
@@ -801,6 +801,463 @@ function bindBackgroundControls() {
     });
 }
 
+// ================================================================
+// SKILLS
+// ================================================================
+
+function renderSkills() {
+    const content = document.getElementById(
+        "builder-content"
+    );
+
+    if (
+        !character.career ||
+        !character.specialization
+    ) {
+        content.innerHTML = `
+            <h2>Skills</h2>
+
+            <p>
+                Choose a Career and Specialization
+                before selecting skill ranks.
+            </p>
+        `;
+
+        return;
+    }
+
+    const careerSkills =
+        getCurrentCareerSkillIds().map(
+            id => getSkillById(id)
+        );
+
+    const freeCareerChoices =
+        careerSkills.map(skill => {
+
+            const checked =
+                character.freeCareerSkills
+                    .includes(skill.id)
+                    ? "checked"
+                    : "";
+
+            const disabled =
+                character.freeCareerSkills.length >=
+                    GAME_DATA.characterCreation
+                        .startingCareerSkillRanks &&
+                !character.freeCareerSkills
+                    .includes(skill.id)
+                    ? "disabled"
+                    : "";
+
+            return `
+                <label class="free-career-skill">
+
+                    <input
+                        type="checkbox"
+                        class="free-career-skill-checkbox"
+                        value="${skill.id}"
+                        ${checked}
+                        ${disabled}
+                    >
+
+                    <span>
+                        ${skill.name}
+                    </span>
+
+                    <small>
+                        ${getCharacteristicName(
+                            skill.characteristic
+                        )}
+                    </small>
+
+                </label>
+            `;
+        }).join("");
+
+    const categories = [
+        "General",
+        "Combat",
+        "Social",
+        "Knowledge"
+    ];
+
+    const skillGroups =
+        categories.map(category => {
+
+            const skills =
+                GAME_DATA.skills.filter(
+                    skill =>
+                        skill.category === category
+                );
+
+            const rows =
+                skills.map(skill =>
+                    renderSkillRow(skill)
+                ).join("");
+
+            return `
+                <div class="skill-group">
+
+                    <h3>${category}</h3>
+
+                    <div class="skill-table">
+                        ${rows}
+                    </div>
+
+                </div>
+            `;
+        }).join("");
+
+    content.innerHTML = `
+        <h2>Skills</h2>
+
+        <h3>Starting Career Skills</h3>
+
+        <p>
+            Choose four of your eight Career skills
+            to begin at Rank 1.
+        </p>
+
+        <p>
+            Selected:
+            <strong>
+                ${character.freeCareerSkills.length}
+                /
+                ${GAME_DATA.characterCreation
+                    .startingCareerSkillRanks}
+            </strong>
+        </p>
+
+        <div class="free-career-skill-list">
+            ${freeCareerChoices}
+        </div>
+
+        <h3>Purchase Skill Ranks</h3>
+
+        <p>
+            Career skills cost 5 XP × the new rank.
+            Non-Career skills cost 5 additional XP
+            per rank.
+        </p>
+
+        <p>
+            Skill XP Spent:
+            <strong>
+                ${getSkillXPSpent()}
+            </strong>
+        </p>
+
+        <p>
+            XP Remaining:
+            <strong>
+                ${getXPRemaining()}
+            </strong>
+        </p>
+
+        <div class="skill-groups">
+            ${skillGroups}
+        </div>
+    `;
+
+    bindSkillControls();
+}
+
+
+function renderSkillRow(skill) {
+    const rank =
+        getTotalSkillRank(skill.id);
+
+    const career =
+        isCareerSkill(skill.id);
+
+    const freeCareer =
+        character.freeCareerSkills
+            .includes(skill.id);
+
+    const background =
+        character.background.skills
+            .includes(skill.id);
+
+    const tags = [];
+
+    if (career) {
+        tags.push("Career");
+    } else {
+        tags.push("Non-Career");
+    }
+
+    if (freeCareer) {
+        tags.push("Free Rank");
+    }
+
+    if (background) {
+        tags.push("Background");
+    }
+
+    const decreaseDisabled =
+        canDecreaseSkillRank(skill.id)
+            ? ""
+            : "disabled";
+
+    const increaseDisabled =
+        canIncreaseSkillRank(skill.id)
+            ? ""
+            : "disabled";
+
+    return `
+        <div class="skill-row">
+
+            <div class="skill-info">
+
+                <strong>
+                    ${skill.name}
+                </strong>
+
+                <small>
+                    ${getCharacteristicName(
+                        skill.characteristic
+                    )}
+                    ·
+                    ${tags.join(" · ")}
+                </small>
+
+            </div>
+
+            <button
+                type="button"
+                class="skill-decrease"
+                data-skill="${skill.id}"
+                ${decreaseDisabled}
+            >
+                −
+            </button>
+
+            <span class="skill-rank">
+                ${rank}
+            </span>
+
+            <button
+                type="button"
+                class="skill-increase"
+                data-skill="${skill.id}"
+                ${increaseDisabled}
+            >
+                +
+            </button>
+
+        </div>
+    `;
+}
+
+
+// ================================================================
+// SKILL EVENTS
+// ================================================================
+
+function bindSkillControls() {
+
+    document.querySelectorAll(
+        ".free-career-skill-checkbox"
+    ).forEach(checkbox => {
+
+        checkbox.addEventListener(
+            "change",
+            () => {
+
+                const skillId =
+                    checkbox.value;
+
+                if (checkbox.checked) {
+
+                    if (
+                        character.freeCareerSkills.length >=
+                        GAME_DATA.characterCreation
+                            .startingCareerSkillRanks
+                    ) {
+                        checkbox.checked = false;
+                        return;
+                    }
+
+                    if (!isCareerSkill(skillId)) {
+                        checkbox.checked = false;
+                        return;
+                    }
+
+                    character.freeCareerSkills.push(
+                        skillId
+                    );
+
+                } else {
+
+                    character.freeCareerSkills =
+                        character.freeCareerSkills
+                            .filter(
+                                id => id !== skillId
+                            );
+                }
+
+                renderSkills();
+                updateSummary();
+            }
+        );
+    });
+
+
+    document.querySelectorAll(
+        ".skill-increase"
+    ).forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                increaseSkillRank(
+                    button.dataset.skill
+                );
+            }
+        );
+    });
+
+
+    document.querySelectorAll(
+        ".skill-decrease"
+    ).forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                decreaseSkillRank(
+                    button.dataset.skill
+                );
+            }
+        );
+    });
+}
+
+
+// ================================================================
+// SKILL RANK CHANGES
+// ================================================================
+
+function getNextSkillRankCost(skillId) {
+    const newRank =
+        getTotalSkillRank(skillId) + 1;
+
+    let cost = newRank * 5;
+
+    if (!isCareerSkill(skillId)) {
+        cost += 5;
+    }
+
+    return cost;
+}
+
+
+function canIncreaseSkillRank(skillId) {
+    const currentRank =
+        getTotalSkillRank(skillId);
+
+    /*
+     * During character creation, no skill may
+     * be raised above Rank 2.
+     */
+    if (currentRank >= 2) {
+        return false;
+    }
+
+    return (
+        getNextSkillRankCost(skillId) <=
+        getXPRemaining()
+    );
+}
+
+
+function canDecreaseSkillRank(skillId) {
+    const storedRank =
+        getSkillRank(skillId);
+
+    const freeRank =
+        character.freeCareerSkills
+            .includes(skillId) ||
+        character.background.skills
+            .includes(skillId);
+
+    /*
+     * A stored purchased rank can always be undone.
+     */
+    if (storedRank > 1) {
+        return true;
+    }
+
+    /*
+     * Rank 1 is removable only if it was actually
+     * purchased rather than granted for free.
+     */
+    if (storedRank === 1 && !freeRank) {
+        return true;
+    }
+
+    return false;
+}
+
+
+function increaseSkillRank(skillId) {
+
+    if (!canIncreaseSkillRank(skillId)) {
+        return;
+    }
+
+    const newRank =
+        getTotalSkillRank(skillId) + 1;
+
+    character.skillRanks[skillId] =
+        newRank;
+
+    renderSkills();
+    updateSummary();
+}
+
+
+function decreaseSkillRank(skillId) {
+
+    if (!canDecreaseSkillRank(skillId)) {
+        return;
+    }
+
+    const storedRank =
+        getSkillRank(skillId);
+
+    const freeRank =
+        character.freeCareerSkills
+            .includes(skillId) ||
+        character.background.skills
+            .includes(skillId);
+
+    if (storedRank > 1) {
+
+        const newRank =
+            storedRank - 1;
+
+        /*
+         * If reducing to Rank 1 and Rank 1 is free,
+         * no stored rank is necessary.
+         */
+        if (newRank === 1 && freeRank) {
+            delete character.skillRanks[skillId];
+        } else {
+            character.skillRanks[skillId] =
+                newRank;
+        }
+
+    } else {
+
+        delete character.skillRanks[skillId];
+    }
+
+    renderSkills();
+    updateSummary();
+}
 
 // ================================================================
 // SUMMARY
