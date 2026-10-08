@@ -202,8 +202,14 @@ function getSkillXPSpent() {
         }
 
         const career = isCareerSkill(skillId);
-        const hasFreeRank =
+        const hasFreeCareerRank =
             character.freeCareerSkills.includes(skillId);
+        
+        const hasFreeBackgroundRank =
+            character.background.skills.includes(skillId);
+        
+        const hasFreeRank =
+            hasFreeCareerRank || hasFreeBackgroundRank;
 
         /*
          * Starting Career skill:
