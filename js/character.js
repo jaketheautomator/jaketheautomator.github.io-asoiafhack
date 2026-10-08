@@ -190,20 +190,6 @@ function canIncreaseCharacteristic(id) {
     return cost <= getXPRemaining();
 }
 
-    /*
-     * Returning a weakened characteristic from 1 to 2
-     * is always permitted. The weakness bonus disappears
-     * automatically afterward.
-     */
-    if (current === 1) {
-        return true;
-    }
-
-    const cost = getCharacteristicIncreaseCost(id);
-
-    return cost <= getXPRemaining();
-}
-
 
 function canDecreaseCharacteristic(id) {
     const current = character.characteristics[id];
