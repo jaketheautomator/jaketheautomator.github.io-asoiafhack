@@ -330,28 +330,319 @@ function getSkillXPSpent() {
 // TALENT XP COSTS
 // ================================================================
 
-function getTalentXPSpent() {
-    /*
-     * Talents will eventually contain objects such as:
-     *
-     * {
-     *     id: "grit",
-     *     tier: 1
-     * }
-     *
-     * Genesys talent cost:
-     *
-     * Tier 1 = 5 XP
-     * Tier 2 = 10 XP
-     * Tier 3 = 15 XP
-     * Tier 4 = 20 XP
-     * Tier 5 = 25 XP
-     */
+function getTalentRank(talentId) {
+    return character.talents.filter(
+        id => id === talentId
+    ).length;
+}
 
-    return character.talents.reduce(
-        (total, talent) => total + (talent.tier * 5),
-        0
+
+function hasTalent(talentId) {
+    return getTalentRank(talentId) > 0;
+}
+
+
+/*
+ * Ranked talents increase in effective tier with each purchase.
+ *
+ * Example for a base Tier 1 ranked talent:
+ * Rank 1 = Tier 1
+ * Rank 2 = Tier 2
+ * Rank 3 = Tier 3
+ * Rank 4 = Tier 4
+ * Rank 5+ = Tier 5
+ *
+ * Non-ranked talents always use their listed tier.
+ */
+function getTalentEffectiveTier(talentId, rank) {
+    const talent = getTalentById(talentId);
+
+    if (!talent) {
+        return null;
+    }
+
+    if (!talent.ranked) {
+        return talent.tier;
+    }
+
+    return Math.min(
+        talent.tier + rank - 1,
+        5
     );
+}
+
+
+/*
+ * Returns the tier that the NEXT purchase of this talent
+ * would occupy.
+ */
+function getNextTalentTier(talentId) {
+    const talent = getTalentById(talentId);
+
+    if (!talent) {
+        return null;
+    }
+
+    const nextRank =
+        getTalentRank(talentId) + 1;
+
+    return getTalentEffectiveTier(
+        talentId,
+        nextRank
+    );
+}
+
+
+/*
+ * Count all purchased talent instances occupying a given
+ * effective tier.
+ */
+function getTalentCountByTier(tier) {
+    let count = 0;
+
+    for (const talent of GAME_DATA.talents) {
+
+        const ranks =
+            getTalentRank(talent.id);
+
+        for (
+            let rank = 1;
+            rank <= ranks;
+            rank++
+        ) {
+            if (
+                getTalentEffectiveTier(
+                    talent.id,
+                    rank
+                ) === tier
+            ) {
+                count++;
+            }
+        }
+    }
+
+    return count;
+}
+
+
+/*
+ * Genesys talent pyramid:
+ *
+ * Tier 2 talents require more Tier 1 talents than Tier 2.
+ * Tier 3 talents require more Tier 2 talents than Tier 3.
+ * And so on.
+ *
+ * This checks the pyramid AFTER the proposed purchase.
+ */
+function canAddTalentAtTier(tier) {
+    if (tier === 1) {
+        return true;
+    }
+
+    const lowerTierCount =
+        getTalentCountByTier(tier - 1);
+
+    const resultingTierCount =
+        getTalentCountByTier(tier) + 1;
+
+    return lowerTierCount >= resultingTierCount;
+}
+
+
+function hasTalentPrerequisites(talent) {
+    return talent.prerequisites.every(
+        prerequisiteId =>
+            hasTalent(prerequisiteId)
+    );
+}
+
+
+function getNextTalentCost(talentId) {
+    const tier =
+        getNextTalentTier(talentId);
+
+    if (tier === null) {
+        return null;
+    }
+
+    return tier * 5;
+}
+
+
+function canPurchaseTalent(talentId) {
+    const talent =
+        getTalentById(talentId);
+
+    if (!talent) {
+        return false;
+    }
+
+    /*
+     * A non-ranked talent can only be purchased once.
+     */
+    if (
+        !talent.ranked &&
+        hasTalent(talentId)
+    ) {
+        return false;
+    }
+
+    if (
+        !hasTalentPrerequisites(talent)
+    ) {
+        return false;
+    }
+
+    const tier =
+        getNextTalentTier(talentId);
+
+    if (
+        !canAddTalentAtTier(tier)
+    ) {
+        return false;
+    }
+
+    const cost =
+        getNextTalentCost(talentId);
+
+    if (
+        cost > getXPRemaining()
+    ) {
+        return false;
+    }
+
+    return true;
+}
+
+
+function purchaseTalent(talentId) {
+    if (!canPurchaseTalent(talentId)) {
+        return false;
+    }
+
+    character.talents.push(talentId);
+
+    return true;
+}
+
+
+/*
+ * Removing a talent can invalidate:
+ *
+ * 1. The talent pyramid.
+ * 2. A prerequisite for another purchased talent.
+ *
+ * We therefore test the resulting character rather than
+ * blindly removing the talent.
+ */
+function isTalentPyramidValid() {
+    for (
+        let tier = 2;
+        tier <= 5;
+        tier++
+    ) {
+        if (
+            getTalentCountByTier(tier) >
+            getTalentCountByTier(tier - 1)
+        ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+function areTalentPrerequisitesValid() {
+    for (const talent of GAME_DATA.talents) {
+
+        if (!hasTalent(talent.id)) {
+            continue;
+        }
+
+        if (
+            !hasTalentPrerequisites(talent)
+        ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+function canRemoveTalent(talentId) {
+    if (!hasTalent(talentId)) {
+        return false;
+    }
+
+    /*
+     * Temporarily remove the highest rank of this talent.
+     */
+    const index =
+        character.talents.lastIndexOf(
+            talentId
+        );
+
+    character.talents.splice(index, 1);
+
+    const valid =
+        isTalentPyramidValid() &&
+        areTalentPrerequisitesValid();
+
+    /*
+     * Restore it immediately.
+     */
+    character.talents.splice(
+        index,
+        0,
+        talentId
+    );
+
+    return valid;
+}
+
+
+function removeTalent(talentId) {
+    if (!canRemoveTalent(talentId)) {
+        return false;
+    }
+
+    const index =
+        character.talents.lastIndexOf(
+            talentId
+        );
+
+    character.talents.splice(index, 1);
+
+    return true;
+}
+
+
+function getTalentXPSpent() {
+    let total = 0;
+
+    for (const talent of GAME_DATA.talents) {
+
+        const ranks =
+            getTalentRank(talent.id);
+
+        for (
+            let rank = 1;
+            rank <= ranks;
+            rank++
+        ) {
+            const tier =
+                getTalentEffectiveTier(
+                    talent.id,
+                    rank
+                );
+
+            total += tier * 5;
+        }
+    }
+
+    return total;
 }
 
 
