@@ -129,31 +129,45 @@ function renderCharacteristics() {
             const value =
                 character.characteristics[stat.id];
 
+            const decreaseDisabled =
+                canDecreaseCharacteristic(stat.id)
+                    ? ""
+                    : "disabled";
+
+            const increaseDisabled =
+                canIncreaseCharacteristic(stat.id)
+                    ? ""
+                    : "disabled";
+
             return `
                 <div class="characteristic-row">
+
                     <span class="characteristic-name">
                         ${stat.name}
                     </span>
 
-                   <button
+                    <button
+                        type="button"
                         class="characteristic-decrease"
                         data-characteristic="${stat.id}"
-                        ${canDecreaseCharacteristic(stat.id) ? "" : "disabled"}
+                        ${decreaseDisabled}
                     >
                         −
                     </button>
-                    
+
                     <span class="characteristic-value">
                         ${value}
                     </span>
-                    
+
                     <button
+                        type="button"
                         class="characteristic-increase"
                         data-characteristic="${stat.id}"
-                        ${canIncreaseCharacteristic(stat.id) ? "" : "disabled"}
+                        ${increaseDisabled}
                     >
                         +
                     </button>
+
                 </div>
             `;
         }).join("");
@@ -168,6 +182,7 @@ function renderCharacteristics() {
 
             return `
                 <label class="threshold-option">
+
                     <input
                         type="radio"
                         name="threshold-profile"
@@ -175,15 +190,37 @@ function renderCharacteristics() {
                         ${checked}
                     >
 
-                    <strong>${profile.name}</strong>
+                    <strong>
+                        ${profile.name}
+                    </strong>
 
                     <span>
                         WT ${profile.woundBase} + Brawn,
                         ST ${profile.strainBase} + Willpower
                     </span>
+
                 </label>
             `;
         }).join("");
+
+    const weaknessCharacteristic =
+        getWeaknessCharacteristic();
+
+    let weaknessDisplay = "";
+
+    if (weaknessCharacteristic) {
+        weaknessDisplay = `
+            <p class="characteristic-weakness-active">
+                Weakness:
+                <strong>
+                    ${getCharacteristicName(
+                        weaknessCharacteristic
+                    )}
+                </strong>
+                (+20 XP)
+            </p>
+        `;
+    }
 
     content.innerHTML = `
         <h2>Characteristics</h2>
@@ -193,19 +230,30 @@ function renderCharacteristics() {
             Spend starting XP to increase them.
         </p>
 
+        <p class="characteristic-weakness-note">
+            You may reduce one characteristic from 2 to 1
+            to gain +20 starting XP.
+        </p>
+
+        ${weaknessDisplay}
+
         <div class="characteristics-list">
             ${characteristicRows}
         </div>
 
         <div class="xp-display">
-            Characteristic XP:
-            <strong>${getCharacteristicXPSpent()}</strong>
+            Characteristic XP Spent:
+            <strong>
+                ${getCharacteristicXPSpent()}
+            </strong>
         </div>
 
-        <p class="characteristic-weakness-note">
-            You may reduce one characteristic from 2 to 1
-            to gain +20 starting XP.
-        </p>
+        <div class="xp-display">
+            XP Remaining:
+            <strong>
+                ${getXPRemaining()}
+            </strong>
+        </div>
 
         <h3>Threshold Profile</h3>
 
@@ -268,26 +316,6 @@ function increaseCharacteristic(id) {
 
     renderCharacteristics();
     updateSummary();
-    }
-
-    character.characteristics[id]++;
-
-    /*
-     * Don't permit characteristic purchases that exceed
-     * the XP available for characteristics.
-     *
-     * Obligation XP is intentionally excluded.
-     */
-    if (
-        getCharacteristicXPSpent() >
-        getBaseAvailableXP()
-    ) {
-        character.characteristics[id]--;
-        return;
-    }
-
-    renderCharacteristics();
-    updateSummary();
 }
 
 
@@ -295,12 +323,6 @@ function decreaseCharacteristic(id) {
 
     if (!canDecreaseCharacteristic(id)) {
         return;
-    }
-
-    character.characteristics[id]--;
-
-    renderCharacteristics();
-    updateSummary();
     }
 
     character.characteristics[id]--;
@@ -344,6 +366,7 @@ function renderCareer() {
             <option value="">
                 Choose Career
             </option>
+
             ${careerOptions}
         </select>
 
@@ -353,29 +376,28 @@ function renderCareer() {
     `;
 
     const careerSelect =
-        document.getElementById("career-select");
+        document.getElementById(
+            "career-select"
+        );
 
     careerSelect.addEventListener(
         "change",
         () => {
 
-            const oldCareer = character.career;
+            const oldCareer =
+                character.career;
 
             character.career =
                 careerSelect.value || null;
 
             /*
              * Changing Career invalidates the existing
-             * Specialization.
+             * Specialization and all choices that depend
+             * on the Career/Specialization package.
              */
             if (character.career !== oldCareer) {
                 character.specialization = null;
                 character.freeCareerSkills = [];
-
-                /*
-                 * Background selections depend on the
-                 * Career package, so clear them as well.
-                 */
                 character.background.skills = [];
             }
 
@@ -426,13 +448,17 @@ function renderSpecializations() {
             <option value="">
                 Choose Specialization
             </option>
+
             ${options}
         </select>
     `;
 
-    document.getElementById(
-        "specialization-select"
-    ).addEventListener(
+    const specializationSelect =
+        document.getElementById(
+            "specialization-select"
+        );
+
+    specializationSelect.addEventListener(
         "change",
         event => {
 
@@ -442,6 +468,11 @@ function renderSpecializations() {
             character.specialization =
                 event.target.value || null;
 
+            /*
+             * A new Specialization changes the eight
+             * starting Career skills, so dependent
+             * selections must be reset.
+             */
             if (
                 character.specialization !==
                 oldSpecialization
@@ -476,7 +507,9 @@ function renderCareerSkills() {
 
     const skillNames =
         skillIds.map(id => {
-            const skill = getSkillById(id);
+
+            const skill =
+                getSkillById(id);
 
             return `
                 <li>
@@ -531,7 +564,9 @@ function renderBackground() {
     }
 
     const career =
-        getCareerById(character.career);
+        getCareerById(
+            character.career
+        );
 
     const specialization =
         getSpecializationById(
@@ -550,6 +585,11 @@ function renderBackground() {
         careerSkills.map(skill => `
             <li>
                 ${skill.name}
+                <span>
+                    (${getCharacteristicName(
+                        skill.characteristic
+                    )})
+                </span>
             </li>
         `).join("");
 
@@ -582,13 +622,29 @@ function renderBackground() {
                             ? "checked"
                             : "";
 
+                    /*
+                     * Once two Background skills have
+                     * been chosen, unselected choices
+                     * are disabled until one of the
+                     * existing selections is removed.
+                     */
+                    const disabled =
+                        character.background.skills
+                            .length >= 2 &&
+                        !character.background.skills
+                            .includes(skill.id)
+                            ? "disabled"
+                            : "";
+
                     return `
                         <label class="background-skill">
+
                             <input
                                 type="checkbox"
                                 class="background-skill-checkbox"
                                 value="${skill.id}"
                                 ${checked}
+                                ${disabled}
                             >
 
                             <span>
@@ -600,14 +656,20 @@ function renderBackground() {
                                     skill.characteristic
                                 )}
                             </small>
+
                         </label>
                     `;
                 }).join("");
 
             return `
                 <div class="background-skill-group">
-                    <h3>${category}</h3>
+
+                    <h3>
+                        ${category}
+                    </h3>
+
                     ${choices}
+
                 </div>
             `;
         }).join("");
@@ -697,7 +759,8 @@ function bindBackgroundControls() {
             "change",
             () => {
 
-                const skillId = checkbox.value;
+                const skillId =
+                    checkbox.value;
 
                 if (checkbox.checked) {
 
@@ -781,11 +844,14 @@ function updateSummary() {
 
 
     if (character.career) {
+
         career.textContent =
             getCareerById(
                 character.career
             ).name;
+
     } else {
+
         career.textContent = "—";
     }
 
@@ -794,12 +860,15 @@ function updateSummary() {
         character.career &&
         character.specialization
     ) {
+
         specialization.textContent =
             getSpecializationById(
                 character.career,
                 character.specialization
             ).name;
+
     } else {
+
         specialization.textContent = "—";
     }
 
