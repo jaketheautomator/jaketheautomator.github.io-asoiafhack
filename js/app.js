@@ -135,20 +135,22 @@ function renderCharacteristics() {
                         ${stat.name}
                     </span>
 
-                    <button
+                   <button
                         class="characteristic-decrease"
                         data-characteristic="${stat.id}"
+                        ${canDecreaseCharacteristic(stat.id) ? "" : "disabled"}
                     >
                         −
                     </button>
-
+                    
                     <span class="characteristic-value">
                         ${value}
                     </span>
-
+                    
                     <button
                         class="characteristic-increase"
                         data-characteristic="${stat.id}"
+                        ${canIncreaseCharacteristic(stat.id) ? "" : "disabled"}
                     >
                         +
                     </button>
@@ -200,38 +202,10 @@ function renderCharacteristics() {
             <strong>${getCharacteristicXPSpent()}</strong>
         </div>
 
-        <div class="weakness-section">
-            <label>
-                <input
-                    type="checkbox"
-                    id="use-weakness"
-                    ${character.weakness ? "checked" : ""}
-                >
-                Take a characteristic weakness for +20 XP
-            </label>
-
-            <select
-                id="weakness-characteristic"
-                ${character.weakness ? "" : "disabled"}
-            >
-                <option value="">
-                    Choose characteristic
-                </option>
-
-                ${GAME_DATA.characteristics.map(stat => `
-                    <option
-                        value="${stat.id}"
-                        ${
-                            character.weakness === stat.id
-                                ? "selected"
-                                : ""
-                        }
-                    >
-                        ${stat.name}
-                    </option>
-                `).join("")}
-            </select>
-        </div>
+        <p class="characteristic-weakness-note">
+            You may reduce one characteristic from 2 to 1
+            to gain +20 starting XP.
+        </p>
 
         <h3>Threshold Profile</h3>
 
@@ -284,75 +258,19 @@ function bindCharacteristicControls() {
     });
 
 
-    const weaknessCheckbox =
-        document.getElementById("use-weakness");
-
-    const weaknessSelect =
-        document.getElementById(
-            "weakness-characteristic"
-        );
-
-
-    weaknessCheckbox.addEventListener(
-        "change",
-        () => {
-
-            if (!weaknessCheckbox.checked) {
-
-                if (character.weakness) {
-                    character.characteristics[
-                        character.weakness
-                    ] = 2;
-                }
-
-                character.weakness = null;
-
-            }
-
-            renderCharacteristics();
-            updateSummary();
-        }
-    );
-
-
-    weaknessSelect.addEventListener(
-        "change",
-        () => {
-
-            if (character.weakness) {
-                character.characteristics[
-                    character.weakness
-                ] = 2;
-            }
-
-            const id = weaknessSelect.value;
-
-            if (id) {
-                character.weakness = id;
-                character.characteristics[id] = 1;
-            } else {
-                character.weakness = null;
-            }
-
-            renderCharacteristics();
-            updateSummary();
-        }
-    );
 }
 
 
 function increaseCharacteristic(id) {
 
-    const current =
-        character.characteristics[id];
-
-    if (
-        character.weakness === id ||
-        current >=
-            GAME_DATA.characterCreation
-                .characteristicMaximumAtCreation
-    ) {
+    if (!canIncreaseCharacteristic(id)) {
         return;
+    }
+
+    character.characteristics[id]++;
+
+    renderCharacteristics();
+    updateSummary();
     }
 
     character.characteristics[id]++;
@@ -378,19 +296,14 @@ function increaseCharacteristic(id) {
 
 function decreaseCharacteristic(id) {
 
-    const current =
-        character.characteristics[id];
-
-    if (character.weakness === id) {
+    if (!canDecreaseCharacteristic(id)) {
         return;
     }
 
-    if (
-        current <=
-        GAME_DATA.characterCreation
-            .characteristicStartingValue
-    ) {
-        return;
+    character.characteristics[id]--;
+
+    renderCharacteristics();
+    updateSummary();
     }
 
     character.characteristics[id]--;
