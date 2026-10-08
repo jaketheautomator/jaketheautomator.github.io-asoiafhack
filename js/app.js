@@ -89,7 +89,7 @@ function renderCurrentStep() {
             break;
 
         case "obligation":
-            renderPlaceholder("Obligation");
+            renderObligation();
             break;
 
         case "equipment":
@@ -1750,6 +1750,303 @@ function renderTalentCard(
     return card;
 }
 
+// ============================================================
+// OBLIGATION
+// ============================================================
+
+function renderObligation() {
+    const content =
+        document.getElementById(
+            "builder-content"
+        );
+
+
+    const choices =
+        character.obligation.choices.map(
+            (choice, index) => {
+
+                const label =
+                    choice === "xp"
+                        ? "+5 XP"
+                        : "Starting Wealth";
+
+                return `
+                    <div class="obligation-choice">
+
+                        <span>
+                            +5 Obligation:
+                            <strong>
+                                ${label}
+                            </strong>
+                        </span>
+
+                        <button
+                            type="button"
+                            class="remove-obligation-choice"
+                            data-index="${index}"
+                        >
+                            Remove
+                        </button>
+
+                    </div>
+                `;
+            }
+        ).join("");
+
+
+    const maximum =
+        getMaximumAdditionalObligation();
+
+
+    content.innerHTML = `
+        <h2>Obligation</h2>
+
+        <p>
+            Every character begins with
+            <strong>
+                ${character.obligation.base}
+                Obligation
+            </strong>.
+        </p>
+
+        <p>
+            Additional Obligation may be taken
+            during character creation in increments
+            of 5.
+        </p>
+
+
+       <label class="solo-character-option">
+        
+            <input
+                type="checkbox"
+                id="solo-character"
+                ${
+                    character.obligation.solo
+                        ? "checked"
+                        : ""
+                }
+                ${
+                    character.obligation.solo &&
+                    getAdditionalObligation() >
+                        GAME_DATA.characterCreation
+                            .obligation
+                            .normalMaximumIncrease
+                        ? "disabled"
+                        : ""
+                }
+            >
+        
+            Solo Character
+        
+        </label>
+
+
+        <h3>Current Obligation</h3>
+
+        <p>
+            Base:
+            <strong>
+                ${character.obligation.base}
+            </strong>
+        </p>
+
+        <p>
+            Additional:
+            <strong>
+                ${getAdditionalObligation()}
+                /
+                ${maximum}
+            </strong>
+        </p>
+
+        <p>
+            Total:
+            <strong>
+                ${getTotalObligation()}
+            </strong>
+        </p>
+
+
+        <h3>Additional Obligation</h3>
+
+        <p>
+            For each 5 additional Obligation,
+            choose either additional XP or
+            additional starting wealth.
+        </p>
+
+        <div class="obligation-controls">
+
+            <button
+                type="button"
+                id="add-obligation-xp"
+                ${
+                    canAddObligation()
+                        ? ""
+                        : "disabled"
+                }
+            >
+                +5 Obligation:
+                +5 XP
+            </button>
+
+            <button
+                type="button"
+                id="add-obligation-wealth"
+                ${
+                    canAddObligation()
+                        ? ""
+                        : "disabled"
+                }
+            >
+                +5 Obligation:
+                Wealth
+            </button>
+
+        </div>
+
+
+        <div class="obligation-choices">
+            ${choices}
+        </div>
+
+
+        <h3>Bonuses</h3>
+
+        <p>
+            Bonus XP:
+            <strong>
+                ${getObligationBonusXP()}
+            </strong>
+        </p>
+
+        <p>
+            Bonus Starting Wealth:
+            <strong>
+                ${character.obligation.wealthBonus
+                    .toLocaleString()}
+                silver stags
+            </strong>
+        </p>
+
+        <p>
+            Total Starting Wealth:
+            <strong>
+                ${getStartingWealth()
+                    .toLocaleString()}
+                silver stags
+            </strong>
+        </p>
+
+        <p>
+            XP Remaining:
+            <strong>
+                ${getXPRemaining()}
+            </strong>
+        </p>
+    `;
+
+
+    bindObligationControls();
+}
+
+
+function bindObligationControls() {
+    const soloCheckbox =
+        document.getElementById(
+            "solo-character"
+        );
+
+
+    if (soloCheckbox) {
+        soloCheckbox.addEventListener(
+            "change",
+            event => {
+
+                const success =
+                    setSoloCharacter(
+                        event.target.checked
+                    );
+
+                if (!success) {
+                    event.target.checked = true;
+                }
+
+                renderObligation();
+                updateSummary();
+            }
+        );
+    }
+
+
+    const xpButton =
+        document.getElementById(
+            "add-obligation-xp"
+        );
+
+
+    if (xpButton) {
+        xpButton.addEventListener(
+            "click",
+            () => {
+
+                addObligationChoice("xp");
+
+                renderObligation();
+                updateSummary();
+            }
+        );
+    }
+
+
+    const wealthButton =
+        document.getElementById(
+            "add-obligation-wealth"
+        );
+
+
+    if (wealthButton) {
+        wealthButton.addEventListener(
+            "click",
+            () => {
+
+                addObligationChoice(
+                    "wealth"
+                );
+
+                renderObligation();
+                updateSummary();
+            }
+        );
+    }
+
+
+    document
+        .querySelectorAll(
+            ".remove-obligation-choice"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const index =
+                        Number(
+                            button.dataset.index
+                        );
+
+                    removeObligationChoice(
+                        index
+                    );
+
+                    renderObligation();
+                    updateSummary();
+                }
+            );
+        });
+}
 
 // ================================================================
 // SUMMARY
