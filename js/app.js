@@ -93,7 +93,7 @@ function renderCurrentStep() {
             break;
 
         case "equipment":
-            renderPlaceholder("Equipment");
+            renderEquipment();
             break;
 
         default:
@@ -2048,6 +2048,1020 @@ function bindObligationControls() {
         });
 }
 
+
+// ============================================================
+// EQUIPMENT
+// ============================================================
+
+function renderEquipment() {
+    const content =
+        document.getElementById(
+            "builder-content"
+        );
+
+    content.innerHTML = "";
+
+    const section =
+        document.createElement("section");
+
+    section.className = "equipment-step";
+
+    section.innerHTML = `
+        <h2>Equipment</h2>
+
+        <div class="equipment-summary">
+            <p>
+                <strong>Starting Wealth:</strong>
+                ${getStartingWealth()} stags
+            </p>
+
+            <p>
+                <strong>Spent:</strong>
+                ${getEquipmentSpent()} stags
+            </p>
+
+            <p>
+                <strong>Remaining:</strong>
+                ${getWealthRemaining()} stags
+            </p>
+
+            <p>
+                <strong>Encumbrance:</strong>
+                ${getCurrentEncumbrance()}
+                /
+                ${getEncumbranceThreshold()}
+            </p>
+
+            <p>
+                <strong>Weapon Hard Points:</strong>
+                ${getUsedWeaponHardPoints()}
+                /
+                ${getAvailableWeaponHardPoints()}
+            </p>
+
+            <p>
+                <strong>Armor Hard Points:</strong>
+                ${getUsedArmorHardPoints()}
+                /
+                ${getAvailableArmorHardPoints()}
+            </p>
+        </div>
+
+        <div id="starting-package-section"></div>
+
+        <div id="equipped-armor-section"></div>
+
+        <div id="equipment-inventory-section"></div>
+
+        <div id="equipment-catalog-section"></div>
+    `;
+
+    content.appendChild(section);
+
+    renderStartingEquipmentPackage();
+    renderEquippedArmorSelector();
+    renderEquipmentInventory();
+    renderEquipmentCatalog();
+}
+
+
+// ============================================================
+// STARTING PACKAGE
+// ============================================================
+
+function renderStartingEquipmentPackage() {
+    const container =
+        document.getElementById(
+            "starting-package-section"
+        );
+
+    const equipmentPackage =
+        getCurrentStartingEquipmentPackage();
+
+    if (!equipmentPackage) {
+        container.innerHTML = `
+            <h3>Starting Package</h3>
+            <p>
+                Select a specialization to view
+                its suggested starting equipment.
+            </p>
+        `;
+
+        return;
+    }
+
+    const cost =
+        getStartingEquipmentPackageCost(
+            equipmentPackage.id
+        );
+
+    const itemLines =
+        equipmentPackage.items.map(
+            packageItem => {
+                const item =
+                    getEquipmentById(
+                        packageItem.id
+                    );
+
+                if (!item) {
+                    return `
+                        <li>
+                            Unknown item:
+                            ${packageItem.id}
+                        </li>
+                    `;
+                }
+
+                const quantity =
+                    packageItem.quantity > 1
+                        ? `${packageItem.quantity}× `
+                        : "";
+
+                return `
+                    <li>
+                        ${quantity}${item.name}
+                    </li>
+                `;
+            }
+        ).join("");
+
+    container.innerHTML = `
+        <h3>Starting Package</h3>
+
+        <h4>${equipmentPackage.name}</h4>
+
+        <ul>
+            ${itemLines}
+        </ul>
+
+        <p>
+            <strong>Package Cost:</strong>
+            ${cost} stags
+        </p>
+
+        <button
+            id="purchase-starting-package"
+            ${
+                canPurchaseEquipmentPackage(
+                    equipmentPackage.id
+                )
+                    ? ""
+                    : "disabled"
+            }
+        >
+            Buy Starting Package
+        </button>
+    `;
+
+    const button =
+        document.getElementById(
+            "purchase-starting-package"
+        );
+
+    if (button) {
+        button.addEventListener(
+            "click",
+            () => {
+                const success =
+                    purchaseEquipmentPackage(
+                        equipmentPackage.id
+                    );
+
+                if (!success) return;
+
+                renderEquipment();
+                updateSummary();
+            }
+        );
+    }
+}
+
+
+// ============================================================
+// EQUIPPED ARMOR
+// ============================================================
+
+function renderEquippedArmorSelector() {
+    const container =
+        document.getElementById(
+            "equipped-armor-section"
+        );
+
+    const ownedArmor =
+        character.equipment.filter(
+            entry => {
+                const item =
+                    getEquipmentById(entry.id);
+
+                return (
+                    item &&
+                    item.category === "armor"
+                );
+            }
+        );
+
+    const armorOptions =
+        ownedArmor.map(
+            entry => {
+                const item =
+                    getEquipmentById(entry.id);
+
+                const selected =
+                    character.equippedArmor ===
+                    entry.instanceId
+                        ? "selected"
+                        : "";
+
+                return `
+                    <option
+                        value="${entry.instanceId}"
+                        ${selected}
+                    >
+                        ${item.name}
+                    </option>
+                `;
+            }
+        ).join("");
+
+    const armor =
+        getEquippedArmor();
+
+    container.innerHTML = `
+        <h3>Equipped Armor</h3>
+
+        <label>
+            Armor:
+            <select id="equipped-armor-select">
+                <option value="">
+                    None
+                </option>
+                ${armorOptions}
+            </select>
+        </label>
+
+        <p>
+            <strong>Armor Soak:</strong>
+            ${getArmorSoakBonus()}
+        </p>
+
+        <p>
+            <strong>Armor Defense:</strong>
+            ${getArmorDefense()}
+        </p>
+
+        ${
+            armor
+                ? `
+                    <p>
+                        Currently wearing:
+                        ${armor.name}
+                    </p>
+                `
+                : ""
+        }
+    `;
+
+    const select =
+        document.getElementById(
+            "equipped-armor-select"
+        );
+
+    select.addEventListener(
+        "change",
+        event => {
+            const value =
+                event.target.value;
+
+            if (value === "") {
+                equipArmor(null);
+            } else {
+                equipArmor(
+                    Number(value)
+                );
+            }
+
+            renderEquipment();
+            updateSummary();
+        }
+    );
+}
+
+
+// ============================================================
+// INVENTORY
+// ============================================================
+
+function renderEquipmentInventory() {
+    const container =
+        document.getElementById(
+            "equipment-inventory-section"
+        );
+
+    container.innerHTML = `
+        <h3>Inventory</h3>
+    `;
+
+    if (character.equipment.length === 0) {
+        container.innerHTML += `
+            <p>No equipment purchased.</p>
+        `;
+
+        return;
+    }
+
+    const list =
+        document.createElement("div");
+
+    list.className = "equipment-inventory";
+
+    for (const entry of character.equipment) {
+        const item =
+            getEquipmentById(entry.id);
+
+        if (!item) continue;
+
+        const row =
+            document.createElement("div");
+
+        row.className =
+            "equipment-inventory-row";
+
+        const isEquippedArmor =
+            character.equippedArmor ===
+            entry.instanceId;
+
+        const canRefund =
+            canRefundEquipment(
+                entry.instanceId
+            );
+
+        row.innerHTML = `
+            <div class="equipment-inventory-name">
+                <strong>${item.name}</strong>
+
+                ${
+                    isEquippedArmor
+                        ? " (Equipped)"
+                        : ""
+                }
+            </div>
+
+            <div class="equipment-inventory-details">
+                ${getEquipmentInventoryDetails(
+                    item,
+                    entry
+                )}
+            </div>
+
+            <label>
+                <input
+                    type="checkbox"
+                    class="equipment-stowed"
+                    data-instance-id="${entry.instanceId}"
+                    ${entry.stowed ? "checked" : ""}
+                >
+                Stowed
+            </label>
+
+            <button
+                class="refund-equipment"
+                data-instance-id="${entry.instanceId}"
+                ${canRefund ? "" : "disabled"}
+            >
+                Refund
+                ${
+                    item.price !== null &&
+                    item.price !== undefined
+                        ? `${item.price} stags`
+                        : ""
+                }
+            </button>
+        `;
+
+        list.appendChild(row);
+    }
+
+    container.appendChild(list);
+
+    bindEquipmentInventoryControls();
+}
+
+
+function getEquipmentInventoryDetails(
+    item,
+    entry
+) {
+    const details = [];
+
+    details.push(
+        formatEquipmentCategory(
+            item.category
+        )
+    );
+
+    if (
+        item.encumbrance !== null &&
+        item.encumbrance !== undefined
+    ) {
+        details.push(
+            `Enc ${getEquipmentInstanceEncumbrance(
+                entry
+            )}`
+        );
+    }
+
+    if (
+        item.category === "weapon" ||
+        item.category === "armor"
+    ) {
+        details.push(
+            `HP ${item.hardPoints || 0}`
+        );
+    }
+
+    if (item.category === "attachment") {
+        details.push(
+            `HP Cost ${item.hardPointCost || 0}`
+        );
+    }
+
+    return details.join(" | ");
+}
+
+
+function bindEquipmentInventoryControls() {
+    const stowedCheckboxes =
+        document.querySelectorAll(
+            ".equipment-stowed"
+        );
+
+    for (
+        const checkbox of
+        stowedCheckboxes
+    ) {
+        checkbox.addEventListener(
+            "change",
+            event => {
+                const instanceId =
+                    Number(
+                        event.target
+                            .dataset
+                            .instanceId
+                    );
+
+                setEquipmentStowed(
+                    instanceId,
+                    event.target.checked
+                );
+
+                renderEquipment();
+                updateSummary();
+            }
+        );
+    }
+
+    const refundButtons =
+        document.querySelectorAll(
+            ".refund-equipment"
+        );
+
+    for (
+        const button of
+        refundButtons
+    ) {
+        button.addEventListener(
+            "click",
+            event => {
+                const instanceId =
+                    Number(
+                        event.target
+                            .dataset
+                            .instanceId
+                    );
+
+                const success =
+                    refundEquipment(
+                        instanceId
+                    );
+
+                if (!success) return;
+
+                renderEquipment();
+                updateSummary();
+            }
+        );
+    }
+}
+
+
+// ============================================================
+// EQUIPMENT CATALOG
+// ============================================================
+
+function renderEquipmentCatalog() {
+    const container =
+        document.getElementById(
+            "equipment-catalog-section"
+        );
+
+    container.innerHTML = `
+        <h3>Equipment Catalog</h3>
+    `;
+
+    const categories = [
+        {
+            id: "weapon",
+            name: "Weapons"
+        },
+        {
+            id: "armor",
+            name: "Armor"
+        },
+        {
+            id: "gear",
+            name: "General Gear"
+        },
+        {
+            id: "mount",
+            name: "Mounts"
+        },
+        {
+            id: "tack",
+            name: "Tack"
+        },
+        {
+            id: "barding",
+            name: "Barding"
+        },
+        {
+            id: "vehicle",
+            name: "Vehicles"
+        }
+    ];
+
+    for (const category of categories) {
+        renderEquipmentCategory(
+            container,
+            category.id,
+            category.name
+        );
+    }
+
+    renderAttachmentCatalog(container);
+}
+
+
+function renderEquipmentCategory(
+    parent,
+    categoryId,
+    heading
+) {
+    const items =
+        GAME_DATA.equipment.filter(
+            item =>
+                item.category === categoryId
+        );
+
+    if (items.length === 0) return;
+
+    const section =
+        document.createElement("section");
+
+    section.className =
+        "equipment-catalog-category";
+
+    section.innerHTML = `
+        <h4>${heading}</h4>
+    `;
+
+    for (const item of items) {
+        const card =
+            createEquipmentCatalogCard(
+                item
+            );
+
+        section.appendChild(card);
+    }
+
+    parent.appendChild(section);
+
+    bindEquipmentPurchaseButtons(section);
+}
+
+
+// ============================================================
+// ATTACHMENTS
+// ============================================================
+
+function renderAttachmentCatalog(parent) {
+    const weaponAttachments =
+        GAME_DATA.equipment.filter(
+            item =>
+                item.category ===
+                    "attachment" &&
+                item.attachmentType ===
+                    "weapon"
+        );
+
+    const armorAttachments =
+        GAME_DATA.equipment.filter(
+            item =>
+                item.category ===
+                    "attachment" &&
+                item.attachmentType ===
+                    "armor"
+        );
+
+    const section =
+        document.createElement("section");
+
+    section.className =
+        "equipment-catalog-category";
+
+    section.innerHTML = `
+        <h4>Attachments</h4>
+
+        <p>
+            Weapon HP:
+            ${getUsedWeaponHardPoints()}
+            /
+            ${getAvailableWeaponHardPoints()}
+        </p>
+
+        <p>
+            Armor HP:
+            ${getUsedArmorHardPoints()}
+            /
+            ${getAvailableArmorHardPoints()}
+        </p>
+
+        <h5>Weapon Attachments</h5>
+
+        <div id="weapon-attachment-list"></div>
+
+        <h5>Armor Attachments</h5>
+
+        <div id="armor-attachment-list"></div>
+    `;
+
+    parent.appendChild(section);
+
+    const weaponList =
+        section.querySelector(
+            "#weapon-attachment-list"
+        );
+
+    const armorList =
+        section.querySelector(
+            "#armor-attachment-list"
+        );
+
+    for (
+        const item of
+        weaponAttachments
+    ) {
+        weaponList.appendChild(
+            createEquipmentCatalogCard(
+                item
+            )
+        );
+    }
+
+    for (
+        const item of
+        armorAttachments
+    ) {
+        armorList.appendChild(
+            createEquipmentCatalogCard(
+                item
+            )
+        );
+    }
+
+    bindEquipmentPurchaseButtons(section);
+}
+
+
+// ============================================================
+// CATALOG CARDS
+// ============================================================
+
+function createEquipmentCatalogCard(item) {
+    const card =
+        document.createElement("div");
+
+    card.className =
+        "equipment-catalog-card";
+
+    const purchasable =
+        canPurchaseEquipment(item.id);
+
+    const priceText =
+        item.price === null ||
+        item.price === undefined
+            ? "Not normally purchasable"
+            : `${item.price} stags`;
+
+    card.innerHTML = `
+        <h5>${item.name}</h5>
+
+        <p>
+            ${getEquipmentCatalogSummary(
+                item
+            )}
+        </p>
+
+        ${
+            item.description
+                ? `
+                    <p>
+                        ${item.description}
+                    </p>
+                `
+                : ""
+        }
+
+        <p>
+            <strong>Price:</strong>
+            ${priceText}
+        </p>
+
+        <p>
+            <strong>Rarity:</strong>
+            ${
+                item.rarity === null
+                    ? "—"
+                    : item.rarity
+            }
+        </p>
+
+        ${
+            item.purchasable === false
+                ? ""
+                : `
+                    <button
+                        class="purchase-equipment"
+                        data-equipment-id="${item.id}"
+                        ${
+                            purchasable
+                                ? ""
+                                : "disabled"
+                        }
+                    >
+                        Buy
+                    </button>
+                `
+        }
+    `;
+
+    return card;
+}
+
+
+function bindEquipmentPurchaseButtons(
+    container
+) {
+    const buttons =
+        container.querySelectorAll(
+            ".purchase-equipment"
+        );
+
+    for (const button of buttons) {
+        button.addEventListener(
+            "click",
+            event => {
+                const equipmentId =
+                    event.target
+                        .dataset
+                        .equipmentId;
+
+                const success =
+                    purchaseEquipment(
+                        equipmentId
+                    );
+
+                if (!success) return;
+
+                renderEquipment();
+                updateSummary();
+            }
+        );
+    }
+}
+
+
+// ============================================================
+// EQUIPMENT DISPLAY HELPERS
+// ============================================================
+
+function getEquipmentCatalogSummary(item) {
+    switch (item.category) {
+
+        case "weapon":
+            return getWeaponSummary(item);
+
+        case "armor":
+            return getArmorSummary(item);
+
+        case "gear":
+            return getGearSummary(item);
+
+        case "mount":
+            return getMountSummary(item);
+
+        case "tack":
+        case "barding":
+            return getGearSummary(item);
+
+        case "vehicle":
+            return "Vehicle";
+
+        case "attachment":
+            return getAttachmentSummary(
+                item
+            );
+
+        default:
+            return "";
+    }
+}
+
+
+function getWeaponSummary(item) {
+    const parts = [];
+
+    parts.push(
+        getSkillName(item.skill)
+    );
+
+    parts.push(
+        `Damage ${formatWeaponDamage(
+            item.damage
+        )}`
+    );
+
+    parts.push(
+        `Crit ${item.critical}`
+    );
+
+    parts.push(
+        `Range ${item.range}`
+    );
+
+    parts.push(
+        `Enc ${item.encumbrance}`
+    );
+
+    parts.push(
+        `HP ${item.hardPoints || 0}`
+    );
+
+    if (
+        item.qualities &&
+        item.qualities.length > 0
+    ) {
+        parts.push(
+            formatEquipmentQualities(
+                item.qualities
+            )
+        );
+    }
+
+    return parts.join(" | ");
+}
+
+
+function getArmorSummary(item) {
+    return [
+        `Defense ${item.defense}`,
+        `Soak +${item.soak}`,
+        `Enc ${item.encumbrance}`,
+        `HP ${item.hardPoints || 0}`
+    ].join(" | ");
+}
+
+
+function getGearSummary(item) {
+    if (
+        item.encumbrance === null ||
+        item.encumbrance === undefined
+    ) {
+        return formatEquipmentCategory(
+            item.category
+        );
+    }
+
+    return `Enc ${item.encumbrance}`;
+}
+
+
+function getMountSummary(item) {
+    return [
+        `Brawn ${item.brawn}`,
+        `Agility ${item.agility}`,
+        `Soak ${item.soak}`,
+        `WT ${item.woundThreshold}`,
+        `Capacity ${item.encumbranceCapacity}`
+    ].join(" | ");
+}
+
+
+function getAttachmentSummary(item) {
+    const type =
+        item.attachmentType === "weapon"
+            ? "Weapon"
+            : "Armor";
+
+    return (
+        `${type} Attachment | ` +
+        `HP ${item.hardPointCost || 0}`
+    );
+}
+
+
+function formatWeaponDamage(damage) {
+    if (!damage) return "—";
+
+    if (damage.type === "fixed") {
+        return damage.value;
+    }
+
+    if (damage.type === "brawn-plus") {
+        if (damage.value === 0) {
+            return "Brawn";
+        }
+
+        return `Brawn +${damage.value}`;
+    }
+
+    return damage.value;
+}
+
+
+function formatEquipmentQualities(
+    qualities
+) {
+    return qualities.map(
+        quality => {
+            if (
+                quality.rating === undefined
+            ) {
+                return quality.name;
+            }
+
+            return (
+                `${quality.name} ` +
+                `${quality.rating}`
+            );
+        }
+    ).join(", ");
+}
+
+
+function formatEquipmentCategory(
+    category
+) {
+    switch (category) {
+        case "weapon":
+            return "Weapon";
+
+        case "armor":
+            return "Armor";
+
+        case "gear":
+            return "Gear";
+
+        case "mount":
+            return "Mount";
+
+        case "tack":
+            return "Tack";
+
+        case "barding":
+            return "Barding";
+
+        case "vehicle":
+            return "Vehicle";
+
+        case "attachment":
+            return "Attachment";
+
+        default:
+            return category;
+    }
+}
+
+
+function getSkillName(skillId) {
+    const skill =
+        getSkillById(skillId);
+
+    return skill
+        ? skill.name
+        : skillId;
+}
+
+
 // ================================================================
 // SUMMARY
 // ================================================================
@@ -2128,7 +3142,7 @@ function updateSummary() {
 
 
     wealth.textContent =
-        getStartingWealth()
+        getWealthRemaining()
             .toLocaleString();
 }
 
