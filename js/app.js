@@ -1266,7 +1266,9 @@ function decreaseSkillRank(skillId) {
 
 function renderTalents() {
     const content =
-        document.getElementById("step-content");
+        document.getElementById(
+            "builder-content"
+        );
 
     content.innerHTML = "";
 
