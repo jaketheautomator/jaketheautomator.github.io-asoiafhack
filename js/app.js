@@ -2140,11 +2140,16 @@ function renderStartingEquipmentPackage() {
 
     if (!equipmentPackage) {
         container.innerHTML = `
-            <h3>Starting Package</h3>
-            <p>
-                Select a specialization to view
-                its suggested starting equipment.
-            </p>
+            <details open>
+                <summary>Starting Package</summary>
+
+                <div class="equipment-section-content">
+                    <p>
+                        Select a specialization to view
+                        its suggested starting equipment.
+                    </p>
+                </div>
+            </details>
         `;
 
         return;
@@ -2186,31 +2191,37 @@ function renderStartingEquipmentPackage() {
         ).join("");
 
     container.innerHTML = `
-        <h3>Starting Package</h3>
+        <details open>
+            <summary>Starting Package</summary>
 
-        <h4>${equipmentPackage.name}</h4>
+            <div class="equipment-section-content">
 
-        <ul>
-            ${itemLines}
-        </ul>
+                <h4>${equipmentPackage.name}</h4>
 
-        <p>
-            <strong>Package Cost:</strong>
-            ${cost} stags
-        </p>
+                <ul>
+                    ${itemLines}
+                </ul>
 
-        <button
-            id="purchase-starting-package"
-            ${
-                canPurchaseEquipmentPackage(
-                    equipmentPackage.id
-                )
-                    ? ""
-                    : "disabled"
-            }
-        >
-            Buy Starting Package
-        </button>
+                <p>
+                    <strong>Package Cost:</strong>
+                    ${cost} stags
+                </p>
+
+                <button
+                    id="purchase-starting-package"
+                    ${
+                        canPurchaseEquipmentPackage(
+                            equipmentPackage.id
+                        )
+                            ? ""
+                            : "disabled"
+                    }
+                >
+                    Buy Starting Package
+                </button>
+
+            </div>
+        </details>
     `;
 
     const button =
@@ -2287,38 +2298,44 @@ function renderEquippedArmorSelector() {
         getEquippedArmor();
 
     container.innerHTML = `
-        <h3>Equipped Armor</h3>
+        <details open>
+            <summary>Equipped Armor</summary>
 
-        <label>
-            Armor:
-            <select id="equipped-armor-select">
-                <option value="">
-                    None
-                </option>
-                ${armorOptions}
-            </select>
-        </label>
+            <div class="equipment-section-content">
 
-        <p>
-            <strong>Armor Soak:</strong>
-            ${getArmorSoakBonus()}
-        </p>
+                <label>
+                    Armor:
+                    <select id="equipped-armor-select">
+                        <option value="">
+                            None
+                        </option>
+                        ${armorOptions}
+                    </select>
+                </label>
 
-        <p>
-            <strong>Armor Defense:</strong>
-            ${getArmorDefense()}
-        </p>
+                <p>
+                    <strong>Armor Soak:</strong>
+                    ${getArmorSoakBonus()}
+                </p>
 
-        ${
-            armor
-                ? `
-                    <p>
-                        Currently wearing:
-                        ${armor.name}
-                    </p>
-                `
-                : ""
-        }
+                <p>
+                    <strong>Armor Defense:</strong>
+                    ${getArmorDefense()}
+                </p>
+
+                ${
+                    armor
+                        ? `
+                            <p>
+                                Currently wearing:
+                                ${armor.name}
+                            </p>
+                        `
+                        : ""
+                }
+
+            </div>
+        </details>
     `;
 
     const select =
@@ -2357,14 +2374,34 @@ function renderEquipmentInventory() {
             "equipment-inventory-section"
         );
 
-    container.innerHTML = `
-        <h3>Inventory</h3>
-    `;
+    container.innerHTML = "";
+
+    const details =
+        document.createElement("details");
+
+    details.open = true;
+
+    const summary =
+        document.createElement("summary");
+
+    summary.textContent =
+        `Inventory (${character.equipment.length})`;
+
+    details.appendChild(summary);
+
+    const content =
+        document.createElement("div");
+
+    content.className =
+        "equipment-section-content";
 
     if (character.equipment.length === 0) {
-        container.innerHTML += `
+        content.innerHTML = `
             <p>No equipment purchased.</p>
         `;
+
+        details.appendChild(content);
+        container.appendChild(details);
 
         return;
     }
@@ -2441,7 +2478,9 @@ function renderEquipmentInventory() {
         list.appendChild(row);
     }
 
-    container.appendChild(list);
+    content.appendChild(list);
+    details.appendChild(content);
+    container.appendChild(details);
 
     bindEquipmentInventoryControls();
 }
@@ -2558,56 +2597,108 @@ function bindEquipmentInventoryControls() {
 // EQUIPMENT CATALOG
 // ============================================================
 
-function renderEquipmentCatalog() {
-    const container =
-        document.getElementById(
-            "equipment-catalog-section"
+function renderAttachmentCatalog(parent) {
+    const weaponAttachments =
+        GAME_DATA.equipment.filter(
+            item =>
+                item.category ===
+                    "attachment" &&
+                item.attachmentType ===
+                    "weapon"
         );
 
-    container.innerHTML = `
-        <h3>Equipment Catalog</h3>
+    const armorAttachments =
+        GAME_DATA.equipment.filter(
+            item =>
+                item.category ===
+                    "attachment" &&
+                item.attachmentType ===
+                    "armor"
+        );
+
+    const details =
+        document.createElement("details");
+
+    details.className =
+        "equipment-catalog-category";
+
+    const summary =
+        document.createElement("summary");
+
+    summary.textContent =
+        `Attachments (${
+            weaponAttachments.length +
+            armorAttachments.length
+        })`;
+
+    details.appendChild(summary);
+
+    const content =
+        document.createElement("div");
+
+    content.className =
+        "equipment-section-content";
+
+    content.innerHTML = `
+        <p>
+            Weapon HP:
+            ${getUsedWeaponHardPoints()}
+            /
+            ${getAvailableWeaponHardPoints()}
+        </p>
+
+        <p>
+            Armor HP:
+            ${getUsedArmorHardPoints()}
+            /
+            ${getAvailableArmorHardPoints()}
+        </p>
+
+        <h5>Weapon Attachments</h5>
+
+        <div id="weapon-attachment-list"></div>
+
+        <h5>Armor Attachments</h5>
+
+        <div id="armor-attachment-list"></div>
     `;
 
-    const categories = [
-        {
-            id: "weapon",
-            name: "Weapons"
-        },
-        {
-            id: "armor",
-            name: "Armor"
-        },
-        {
-            id: "gear",
-            name: "General Gear"
-        },
-        {
-            id: "mount",
-            name: "Mounts"
-        },
-        {
-            id: "tack",
-            name: "Tack"
-        },
-        {
-            id: "barding",
-            name: "Barding"
-        },
-        {
-            id: "vehicle",
-            name: "Vehicles"
-        }
-    ];
+    details.appendChild(content);
+    parent.appendChild(details);
 
-    for (const category of categories) {
-        renderEquipmentCategory(
-            container,
-            category.id,
-            category.name
+    const weaponList =
+        content.querySelector(
+            "#weapon-attachment-list"
+        );
+
+    const armorList =
+        content.querySelector(
+            "#armor-attachment-list"
+        );
+
+    for (
+        const item of
+        weaponAttachments
+    ) {
+        weaponList.appendChild(
+            createEquipmentCatalogCard(
+                item
+            )
         );
     }
 
-    renderAttachmentCatalog(container);
+    for (
+        const item of
+        armorAttachments
+    ) {
+        armorList.appendChild(
+            createEquipmentCatalogCard(
+                item
+            )
+        );
+    }
+
+    bindEquipmentPurchaseButtons(details);
 }
 
 
@@ -2624,15 +2715,25 @@ function renderEquipmentCategory(
 
     if (items.length === 0) return;
 
-    const section =
-        document.createElement("section");
+    const details =
+        document.createElement("details");
 
-    section.className =
+    details.className =
         "equipment-catalog-category";
 
-    section.innerHTML = `
-        <h4>${heading}</h4>
-    `;
+    const summary =
+        document.createElement("summary");
+
+    summary.textContent =
+        `${heading} (${items.length})`;
+
+    details.appendChild(summary);
+
+    const content =
+        document.createElement("div");
+
+    content.className =
+        "equipment-section-content";
 
     for (const item of items) {
         const card =
@@ -2640,12 +2741,13 @@ function renderEquipmentCategory(
                 item
             );
 
-        section.appendChild(card);
+        content.appendChild(card);
     }
 
-    parent.appendChild(section);
+    details.appendChild(content);
+    parent.appendChild(details);
 
-    bindEquipmentPurchaseButtons(section);
+    bindEquipmentPurchaseButtons(details);
 }
 
 
