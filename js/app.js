@@ -252,12 +252,9 @@ function bindCharacteristicControls() {
 
         input.addEventListener("change", () => {
             character.thresholdProfile = input.value;
-
             updateSummary();
         });
     });
-
-
 }
 
 
