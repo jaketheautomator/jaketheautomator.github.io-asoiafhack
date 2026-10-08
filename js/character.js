@@ -94,7 +94,9 @@ const character = {
 // EQUIPMENT
 // ============================================================
 
-    equipment: []
+    equipment: [],
+    equippedArmor: null,
+    nextEquipmentInstanceId: 1
 };
 
 
@@ -1042,6 +1044,641 @@ function getStartingWealth() {
         GAME_DATA.characterCreation.startingWealth +
         character.obligation.wealthBonus
     );
+}
+
+
+// ============================================================
+// EQUIPMENT
+// ============================================================
+
+function getEquipmentInstance(instanceId) {
+    return character.equipment.find(
+        entry => entry.instanceId === instanceId
+    ) || null;
+}
+
+
+function getEquipmentItemForInstance(instanceId) {
+    const entry = getEquipmentInstance(instanceId);
+
+    if (!entry) return null;
+
+    return getEquipmentById(entry.id);
+}
+
+
+function getEquipmentInstancesById(equipmentId) {
+    return character.equipment.filter(
+        entry => entry.id === equipmentId
+    );
+}
+
+
+function getEquipmentQuantity(equipmentId) {
+    return getEquipmentInstancesById(
+        equipmentId
+    ).length;
+}
+
+
+function getEquipmentSpent() {
+    let total = 0;
+
+    for (const entry of character.equipment) {
+        const item = getEquipmentById(entry.id);
+
+        if (!item) continue;
+        if (item.price === null) continue;
+
+        total += item.price;
+    }
+
+    return total;
+}
+
+
+function getWealthRemaining() {
+    return (
+        getStartingWealth() -
+        getEquipmentSpent()
+    );
+}
+
+
+// ============================================================
+// EQUIPMENT INSTANCE CREATION
+// ============================================================
+
+function getDefaultStowedState(item) {
+    return (
+        item.category === "mount" ||
+        item.category === "tack" ||
+        item.category === "barding" ||
+        item.category === "vehicle"
+    );
+}
+
+
+function createEquipmentInstance(equipmentId) {
+    const item = getEquipmentById(equipmentId);
+
+    if (!item) return null;
+
+    const entry = {
+        instanceId:
+            character.nextEquipmentInstanceId++,
+        id: equipmentId,
+        stowed: getDefaultStowedState(item)
+    };
+
+    return entry;
+}
+
+
+// ============================================================
+// HARD POINTS
+// ============================================================
+
+function getAvailableWeaponHardPoints() {
+    let total = 0;
+
+    for (const entry of character.equipment) {
+        const item = getEquipmentById(entry.id);
+
+        if (
+            !item ||
+            item.category !== "weapon"
+        ) {
+            continue;
+        }
+
+        total += item.hardPoints || 0;
+    }
+
+    return total;
+}
+
+
+function getAvailableArmorHardPoints() {
+    let total = 0;
+
+    for (const entry of character.equipment) {
+        const item = getEquipmentById(entry.id);
+
+        if (
+            !item ||
+            item.category !== "armor"
+        ) {
+            continue;
+        }
+
+        total += item.hardPoints || 0;
+    }
+
+    return total;
+}
+
+
+function getUsedWeaponHardPoints() {
+    let total = 0;
+
+    for (const entry of character.equipment) {
+        const item = getEquipmentById(entry.id);
+
+        if (
+            !item ||
+            item.category !== "attachment" ||
+            item.attachmentType !== "weapon"
+        ) {
+            continue;
+        }
+
+        total += item.hardPointCost || 0;
+    }
+
+    return total;
+}
+
+
+function getUsedArmorHardPoints() {
+    let total = 0;
+
+    for (const entry of character.equipment) {
+        const item = getEquipmentById(entry.id);
+
+        if (
+            !item ||
+            item.category !== "attachment" ||
+            item.attachmentType !== "armor"
+        ) {
+            continue;
+        }
+
+        total += item.hardPointCost || 0;
+    }
+
+    return total;
+}
+
+
+function hasValidEquipmentHardPoints() {
+    return (
+        getUsedWeaponHardPoints() <=
+            getAvailableWeaponHardPoints() &&
+        getUsedArmorHardPoints() <=
+            getAvailableArmorHardPoints()
+    );
+}
+
+
+function canAddAttachment(item) {
+    if (
+        !item ||
+        item.category !== "attachment"
+    ) {
+        return true;
+    }
+
+    const cost = item.hardPointCost || 0;
+
+    if (item.attachmentType === "weapon") {
+        return (
+            getUsedWeaponHardPoints() + cost <=
+            getAvailableWeaponHardPoints()
+        );
+    }
+
+    if (item.attachmentType === "armor") {
+        return (
+            getUsedArmorHardPoints() + cost <=
+            getAvailableArmorHardPoints()
+        );
+    }
+
+    return false;
+}
+
+
+// ============================================================
+// BUYING EQUIPMENT
+// ============================================================
+
+function canPurchaseEquipment(equipmentId) {
+    const item = getEquipmentById(equipmentId);
+
+    if (!item) return false;
+
+    if (item.purchasable === false) {
+        return false;
+    }
+
+    if (
+        item.price === null ||
+        item.price === undefined
+    ) {
+        return false;
+    }
+
+    if (item.price > getWealthRemaining()) {
+        return false;
+    }
+
+    if (!canAddAttachment(item)) {
+        return false;
+    }
+
+    return true;
+}
+
+
+function purchaseEquipment(equipmentId) {
+    if (!canPurchaseEquipment(equipmentId)) {
+        return false;
+    }
+
+    const entry =
+        createEquipmentInstance(equipmentId);
+
+    if (!entry) return false;
+
+    character.equipment.push(entry);
+
+    return true;
+}
+
+
+// ============================================================
+// REFUNDS
+// ============================================================
+
+function canRefundEquipment(instanceId) {
+    const index =
+        character.equipment.findIndex(
+            entry =>
+                entry.instanceId === instanceId
+        );
+
+    if (index === -1) return false;
+
+    const removed =
+        character.equipment.splice(index, 1)[0];
+
+    const valid =
+        hasValidEquipmentHardPoints();
+
+    character.equipment.splice(
+        index,
+        0,
+        removed
+    );
+
+    return valid;
+}
+
+
+function refundEquipment(instanceId) {
+    if (!canRefundEquipment(instanceId)) {
+        return false;
+    }
+
+    const index =
+        character.equipment.findIndex(
+            entry =>
+                entry.instanceId === instanceId
+        );
+
+    if (index === -1) return false;
+
+    character.equipment.splice(index, 1);
+
+    if (
+        character.equippedArmor ===
+        instanceId
+    ) {
+        character.equippedArmor = null;
+    }
+
+    return true;
+}
+
+
+// ============================================================
+// STOWED STATE
+// ============================================================
+
+function setEquipmentStowed(
+    instanceId,
+    stowed
+) {
+    const entry =
+        getEquipmentInstance(instanceId);
+
+    if (!entry) return false;
+
+    if (
+        stowed &&
+        character.equippedArmor ===
+            instanceId
+    ) {
+        character.equippedArmor = null;
+    }
+
+    entry.stowed = Boolean(stowed);
+
+    return true;
+}
+
+
+// ============================================================
+// EQUIPPED ARMOR
+// ============================================================
+
+function getEquippedArmorEntry() {
+    if (
+        character.equippedArmor === null
+    ) {
+        return null;
+    }
+
+    return getEquipmentInstance(
+        character.equippedArmor
+    );
+}
+
+
+function getEquippedArmor() {
+    const entry =
+        getEquippedArmorEntry();
+
+    if (!entry) return null;
+
+    const item = getEquipmentById(entry.id);
+
+    if (
+        !item ||
+        item.category !== "armor"
+    ) {
+        return null;
+    }
+
+    return item;
+}
+
+
+function equipArmor(instanceId) {
+    if (
+        instanceId === null ||
+        instanceId === ""
+    ) {
+        character.equippedArmor = null;
+        return true;
+    }
+
+    const entry =
+        getEquipmentInstance(instanceId);
+
+    if (!entry) return false;
+
+    const item =
+        getEquipmentById(entry.id);
+
+    if (
+        !item ||
+        item.category !== "armor"
+    ) {
+        return false;
+    }
+
+    entry.stowed = false;
+
+    character.equippedArmor =
+        instanceId;
+
+    return true;
+}
+
+
+function getArmorSoakBonus() {
+    const armor = getEquippedArmor();
+
+    return armor
+        ? armor.soak || 0
+        : 0;
+}
+
+
+function getArmorDefense() {
+    const armor = getEquippedArmor();
+
+    return armor
+        ? armor.defense || 0
+        : 0;
+}
+
+
+// ============================================================
+// ENCUMBRANCE
+// ============================================================
+
+function getBaseEncumbranceThreshold() {
+    return (
+        5 +
+        character.characteristics.brawn
+    );
+}
+
+
+function getBackpackEncumbranceBonus() {
+    let bonus = 0;
+
+    for (const entry of character.equipment) {
+        if (entry.stowed) continue;
+
+        if (entry.id === "backpack") {
+            bonus += 4;
+        }
+    }
+
+    return bonus;
+}
+
+
+function getEncumbranceThreshold() {
+    return (
+        getBaseEncumbranceThreshold() +
+        getBackpackEncumbranceBonus()
+    );
+}
+
+
+function getEquipmentInstanceEncumbrance(
+    entry
+) {
+    if (!entry) return 0;
+    if (entry.stowed) return 0;
+
+    const item = getEquipmentById(entry.id);
+
+    if (!item) return 0;
+
+    if (
+        item.encumbrance === null ||
+        item.encumbrance === undefined
+    ) {
+        return 0;
+    }
+
+    let encumbrance = item.encumbrance;
+
+    if (
+        character.equippedArmor ===
+            entry.instanceId &&
+        item.category === "armor"
+    ) {
+        encumbrance =
+            Math.max(
+                encumbrance - 3,
+                0
+            );
+    }
+
+    return encumbrance;
+}
+
+
+function getCurrentEncumbrance() {
+    let total = 0;
+
+    for (const entry of character.equipment) {
+        total +=
+            getEquipmentInstanceEncumbrance(
+                entry
+            );
+    }
+
+    return total;
+}
+
+
+// ============================================================
+// STARTING PACKAGE
+// ============================================================
+
+function getCurrentStartingEquipmentPackage() {
+    if (!character.specialization) {
+        return null;
+    }
+
+    return getSpecializationEquipmentPackage(
+        character.specialization
+    );
+}
+
+
+function canPurchaseEquipmentPackage(
+    packageId
+) {
+    const equipmentPackage =
+        getStartingEquipmentPackage(
+            packageId
+        );
+
+    if (!equipmentPackage) {
+        return false;
+    }
+
+    const cost =
+        getStartingEquipmentPackageCost(
+            packageId
+        );
+
+    if (
+        cost === null ||
+        cost > getWealthRemaining()
+    ) {
+        return false;
+    }
+
+    /*
+     * Packages currently contain no
+     * attachments, so ordinary hard-point
+     * validation is sufficient.
+     */
+
+    return true;
+}
+
+
+function purchaseEquipmentPackage(
+    packageId
+) {
+    if (
+        !canPurchaseEquipmentPackage(
+            packageId
+        )
+    ) {
+        return false;
+    }
+
+    const equipmentPackage =
+        getStartingEquipmentPackage(
+            packageId
+        );
+
+    const addedInstanceIds = [];
+
+    for (
+        const packageItem of
+        equipmentPackage.items
+    ) {
+        for (
+            let i = 0;
+            i < packageItem.quantity;
+            i++
+        ) {
+            const success =
+                purchaseEquipment(
+                    packageItem.id
+                );
+
+            if (!success) {
+                /*
+                 * Roll back the entire package
+                 * if any individual purchase
+                 * unexpectedly fails.
+                 */
+                for (
+                    const instanceId of
+                    addedInstanceIds
+                ) {
+                    const index =
+                        character.equipment
+                            .findIndex(
+                                entry =>
+                                    entry.instanceId ===
+                                    instanceId
+                            );
+
+                    if (index !== -1) {
+                        character.equipment.splice(
+                            index,
+                            1
+                        );
+                    }
+                }
+
+                return false;
+            }
+
+            addedInstanceIds.push(
+                character.equipment[
+                    character.equipment.length - 1
+                ].instanceId
+            );
+        }
+    }
+
+    return true;
 }
 
 
