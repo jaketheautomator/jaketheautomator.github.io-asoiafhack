@@ -253,18 +253,23 @@ function getBackgroundSkillRank(skillId) {
 
 
 function getTotalSkillRank(skillId) {
-    /*
-     * Background grants rank 1.
-     *
-     * Because Background skills must be non-career skills, they
-     * cannot also be among the four free Career skill selections.
-     */
+    const purchasedRank =
+        getSkillRank(skillId);
+
+    const backgroundRank =
+        getBackgroundSkillRank(skillId);
+
+    const freeCareerRank =
+        character.freeCareerSkills.includes(skillId)
+            ? 1
+            : 0;
+
     return Math.max(
-        getSkillRank(skillId),
-        getBackgroundSkillRank(skillId)
+        purchasedRank,
+        backgroundRank,
+        freeCareerRank
     );
 }
-
 
 // ================================================================
 // SKILL XP COSTS
