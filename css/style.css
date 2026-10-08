@@ -1,0 +1,523 @@
+/* ================================================================
+   ASOIAF GENESYS CHARACTER BUILDER
+   ================================================================ */
+
+:root {
+    --page-bg: #eeeae1;
+    --panel-bg: #f8f5ee;
+    --panel-alt: #e5dfd2;
+
+    --text: #27241f;
+    --text-muted: #6b655c;
+
+    --border: #aaa18f;
+    --border-dark: #71695d;
+
+    --accent: #6d1f1f;
+    --accent-dark: #491414;
+
+    --disabled-bg: #d8d4cb;
+    --disabled-text: #99938a;
+
+    --radius: 4px;
+}
+
+
+/* ================================================================
+   BASE
+   ================================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    background: var(--page-bg);
+    color: var(--text);
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    line-height: 1.45;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button,
+select,
+input[type="checkbox"],
+input[type="radio"] {
+    cursor: pointer;
+}
+
+button:disabled,
+select:disabled,
+input:disabled {
+    cursor: not-allowed;
+}
+
+
+/* ================================================================
+   PAGE
+   ================================================================ */
+
+#app {
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1,
+h2,
+h3 {
+    margin-top: 0;
+}
+
+h1 {
+    margin-bottom: 18px;
+
+    font-size: 2rem;
+    font-weight: normal;
+
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+}
+
+h2 {
+    margin-bottom: 16px;
+
+    font-size: 1.5rem;
+    font-weight: normal;
+}
+
+h3 {
+    margin-top: 24px;
+    margin-bottom: 10px;
+
+    font-size: 1.1rem;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+
+/* ================================================================
+   CHARACTER SUMMARY
+   ================================================================ */
+
+#character-summary {
+    display: grid;
+    grid-template-columns:
+        repeat(6, minmax(100px, 1fr));
+
+    gap: 1px;
+
+    margin-bottom: 18px;
+
+    border: 1px solid var(--border-dark);
+    background: var(--border-dark);
+}
+
+#character-summary > * {
+    margin: 0;
+    padding: 10px 12px;
+
+    background: var(--panel-bg);
+}
+
+#character-summary strong {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: var(--text-muted);
+
+    font-size: 0.72rem;
+    font-family: Arial, Helvetica, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+#character-summary span {
+    display: block;
+}
+
+
+/* ================================================================
+   CREATION NAVIGATION
+   ================================================================ */
+
+#creation-nav {
+    display: flex;
+    flex-wrap: wrap;
+
+    margin-bottom: 18px;
+
+    border-bottom: 2px solid var(--accent);
+}
+
+#creation-nav button {
+    padding: 9px 14px;
+
+    border: 1px solid var(--border);
+    border-bottom: none;
+
+    background: var(--panel-alt);
+    color: var(--text);
+}
+
+#creation-nav button + button {
+    border-left: none;
+}
+
+#creation-nav button:hover {
+    background: var(--panel-bg);
+}
+
+#creation-nav button.active {
+    background: var(--accent);
+    color: white;
+
+    border-color: var(--accent);
+}
+
+
+/* ================================================================
+   MAIN BUILDER PANEL
+   ================================================================ */
+
+#builder-content {
+    padding: 22px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: var(--panel-bg);
+}
+
+
+/* ================================================================
+   STANDARD FORM CONTROLS
+   ================================================================ */
+
+label {
+    display: block;
+}
+
+select,
+input[type="text"] {
+    width: 100%;
+    max-width: 420px;
+
+    margin-top: 4px;
+    margin-bottom: 16px;
+    padding: 8px 10px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: white;
+    color: var(--text);
+}
+
+select:focus,
+input[type="text"]:focus,
+button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+
+/* ================================================================
+   CHARACTERISTICS
+   ================================================================ */
+
+.characteristics-list {
+    width: 100%;
+    max-width: 520px;
+
+    margin: 20px 0;
+}
+
+.characteristic-row {
+    display: grid;
+    grid-template-columns:
+        minmax(140px, 1fr)
+        42px
+        50px
+        42px;
+
+    align-items: center;
+
+    min-height: 48px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.characteristic-row:first-child {
+    border-top: 1px solid var(--border);
+}
+
+.characteristic-name {
+    font-weight: bold;
+}
+
+.characteristic-value {
+    text-align: center;
+
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.characteristic-increase,
+.characteristic-decrease {
+    width: 34px;
+    height: 34px;
+
+    margin: auto;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: var(--panel-alt);
+    color: var(--text);
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+}
+
+.characteristic-increase:hover:not(:disabled),
+.characteristic-decrease:hover:not(:disabled) {
+    background: var(--accent);
+    color: white;
+
+    border-color: var(--accent);
+}
+
+.characteristic-increase:disabled,
+.characteristic-decrease:disabled {
+    background: var(--disabled-bg);
+    color: var(--disabled-text);
+
+    border-color: var(--border);
+
+    opacity: 0.65;
+}
+
+.characteristic-weakness-note {
+    color: var(--text-muted);
+}
+
+.characteristic-weakness-active {
+    width: fit-content;
+
+    padding: 6px 10px;
+
+    border-left: 3px solid var(--accent);
+
+    background: var(--panel-alt);
+}
+
+.xp-display {
+    margin: 6px 0;
+}
+
+
+/* ================================================================
+   THRESHOLD PROFILES
+   ================================================================ */
+
+.threshold-profiles {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(160px, 1fr));
+
+    gap: 10px;
+
+    max-width: 720px;
+}
+
+.threshold-option {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 8px;
+    align-items: start;
+
+    padding: 12px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+.threshold-option input {
+    grid-row: 1 / 3;
+
+    margin-top: 4px;
+}
+
+.threshold-option strong {
+    display: block;
+}
+
+.threshold-option span {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+
+/* ================================================================
+   CAREER SKILLS
+   ================================================================ */
+
+.career-skill-list {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(180px, 1fr));
+
+    gap: 4px 24px;
+
+    max-width: 700px;
+
+    padding-left: 22px;
+}
+
+.career-skill-list span {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+
+/* ================================================================
+   BACKGROUND SKILLS
+   ================================================================ */
+
+.background-skill-list {
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(220px, 1fr));
+
+    gap: 18px;
+
+    max-width: 850px;
+}
+
+.background-skill-group {
+    padding: 14px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+.background-skill-group h3 {
+    margin-top: 0;
+
+    padding-bottom: 5px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.background-skill {
+    display: grid;
+    grid-template-columns:
+        22px
+        minmax(120px, 1fr)
+        auto;
+
+    align-items: center;
+
+    min-height: 34px;
+
+    padding: 3px 0;
+}
+
+.background-skill input {
+    margin: 0;
+}
+
+.background-skill small {
+    color: var(--text-muted);
+}
+
+.background-skill:has(input:disabled) {
+    color: var(--disabled-text);
+}
+
+.background-skill:has(input:disabled) small {
+    color: var(--disabled-text);
+}
+
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+
+@media (max-width: 850px) {
+
+    #character-summary {
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+    .threshold-profiles {
+        grid-template-columns: 1fr;
+    }
+
+    .background-skill-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 560px) {
+
+    #app {
+        padding: 10px;
+    }
+
+    #builder-content {
+        padding: 15px;
+    }
+
+    #character-summary {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    #creation-nav {
+        display: grid;
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    #creation-nav button,
+    #creation-nav button + button {
+        border: 1px solid var(--border);
+    }
+
+    .characteristic-row {
+        grid-template-columns:
+            minmax(100px, 1fr)
+            38px
+            42px
+            38px;
+    }
+
+    .career-skill-list {
+        grid-template-columns: 1fr;
+    }
+}
