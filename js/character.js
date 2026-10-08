@@ -152,15 +152,32 @@ function getCharacteristicIncreaseCost(id) {
     const current = character.characteristics[id];
 
     /*
-     * Raising a weakness from 1 back to the normal
-     * starting value of 2 costs no XP. It simply
+     * Raising a weakened characteristic from 1 to 2
      * removes the +20 XP weakness bonus.
      */
     if (current === 1) {
-        return 0;
+        return 20;
     }
 
     return (current + 1) * 10;
+}
+
+
+function canIncreaseCharacteristic(id) {
+    const current = character.characteristics[id];
+
+    if (
+        current >=
+        GAME_DATA.characterCreation
+            .characteristicMaximumAtCreation
+    ) {
+        return false;
+    }
+
+    const cost =
+        getCharacteristicIncreaseCost(id);
+
+    return cost <= getXPRemaining();
 }
 
 
