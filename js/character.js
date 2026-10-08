@@ -132,9 +132,89 @@ function getCharacteristicXPSpent() {
 
 
 function getWeaknessBonusXP() {
-    return character.weakness ? 20 : 0;
+    return Object.values(character.characteristics)
+        .some(value => value === 1)
+        ? 20
+        : 0;
 }
 
+
+function getWeaknessCharacteristic() {
+    const weakness = GAME_DATA.characteristics.find(
+        stat => character.characteristics[stat.id] === 1
+    );
+
+    return weakness ? weakness.id : null;
+}
+
+
+function getCharacteristicIncreaseCost(id) {
+    const current = character.characteristics[id];
+
+    /*
+     * Raising a weakness from 1 back to the normal
+     * starting value of 2 costs no XP. It simply
+     * removes the +20 XP weakness bonus.
+     */
+    if (current === 1) {
+        return 0;
+    }
+
+    return (current + 1) * 10;
+}
+
+
+function canIncreaseCharacteristic(id) {
+    const current = character.characteristics[id];
+
+    if (
+        current >=
+        GAME_DATA.characterCreation
+            .characteristicMaximumAtCreation
+    ) {
+        return false;
+    }
+
+    /*
+     * Returning a weakened characteristic from 1 to 2
+     * is always permitted. The weakness bonus disappears
+     * automatically afterward.
+     */
+    if (current === 1) {
+        return true;
+    }
+
+    const cost = getCharacteristicIncreaseCost(id);
+
+    return cost <= getXPRemaining();
+}
+
+
+function canDecreaseCharacteristic(id) {
+    const current = character.characteristics[id];
+
+    /*
+     * Nothing can fall below 1.
+     */
+    if (current <= 1) {
+        return false;
+    }
+
+    /*
+     * Purchased characteristic increases may always
+     * be undone during character creation.
+     */
+    if (current > 2) {
+        return true;
+    }
+
+    /*
+     * At 2, this would create the character's one
+     * permitted weakness. It is legal only if no
+     * other characteristic is already at 1.
+     */
+    return getWeaknessCharacteristic() === null;
+}
 
 // ================================================================
 // CAREER SKILLS
