@@ -2597,108 +2597,56 @@ function bindEquipmentInventoryControls() {
 // EQUIPMENT CATALOG
 // ============================================================
 
-function renderAttachmentCatalog(parent) {
-    const weaponAttachments =
-        GAME_DATA.equipment.filter(
-            item =>
-                item.category ===
-                    "attachment" &&
-                item.attachmentType ===
-                    "weapon"
+function renderEquipmentCatalog() {
+    const container =
+        document.getElementById(
+            "equipment-catalog-section"
         );
 
-    const armorAttachments =
-        GAME_DATA.equipment.filter(
-            item =>
-                item.category ===
-                    "attachment" &&
-                item.attachmentType ===
-                    "armor"
-        );
-
-    const details =
-        document.createElement("details");
-
-    details.className =
-        "equipment-catalog-category";
-
-    const summary =
-        document.createElement("summary");
-
-    summary.textContent =
-        `Attachments (${
-            weaponAttachments.length +
-            armorAttachments.length
-        })`;
-
-    details.appendChild(summary);
-
-    const content =
-        document.createElement("div");
-
-    content.className =
-        "equipment-section-content";
-
-    content.innerHTML = `
-        <p>
-            Weapon HP:
-            ${getUsedWeaponHardPoints()}
-            /
-            ${getAvailableWeaponHardPoints()}
-        </p>
-
-        <p>
-            Armor HP:
-            ${getUsedArmorHardPoints()}
-            /
-            ${getAvailableArmorHardPoints()}
-        </p>
-
-        <h5>Weapon Attachments</h5>
-
-        <div id="weapon-attachment-list"></div>
-
-        <h5>Armor Attachments</h5>
-
-        <div id="armor-attachment-list"></div>
+    container.innerHTML = `
+        <h3>Equipment Catalog</h3>
     `;
 
-    details.appendChild(content);
-    parent.appendChild(details);
+    const categories = [
+        {
+            id: "weapon",
+            name: "Weapons"
+        },
+        {
+            id: "armor",
+            name: "Armor"
+        },
+        {
+            id: "gear",
+            name: "General Gear"
+        },
+        {
+            id: "mount",
+            name: "Mounts"
+        },
+        {
+            id: "tack",
+            name: "Tack"
+        },
+        {
+            id: "barding",
+            name: "Barding"
+        },
+        {
+            id: "vehicle",
+            name: "Vehicles"
+        }
+    ];
 
-    const weaponList =
-        content.querySelector(
-            "#weapon-attachment-list"
-        );
-
-    const armorList =
-        content.querySelector(
-            "#armor-attachment-list"
-        );
-
-    for (
-        const item of
-        weaponAttachments
-    ) {
-        weaponList.appendChild(
-            createEquipmentCatalogCard(
-                item
-            )
+    for (const category of categories) {
+        renderEquipmentCategory(
+            container,
+            category.id,
+            category.name
         );
     }
 
-    for (
-        const item of
-        armorAttachments
-    ) {
-        armorList.appendChild(
-            createEquipmentCatalogCard(
-                item
-            )
-        );
-    }
-
-    bindEquipmentPurchaseButtons(details);
+    renderAttachmentCatalog(container);
 }
 
 
