@@ -447,7 +447,8 @@ function renderWeaponTable(items) {
                         <th>Enc</th>
                         <th>HP</th>
                         <th>Price</th>
-                        <th>Qualities / Rules</th>
+                        <th>Rarity</th>
+                        <th>Effect</th>
                     </tr>
                 </thead>
 
@@ -514,7 +515,13 @@ function renderWeaponRow(item) {
             </td>
 
             <td>
-                ${renderEquipmentDetails(item)}
+                ${displayEquipmentValue(
+                    item.rarity
+                )}
+            </td>
+
+            <td>
+                ${renderEquipmentEffect(item)}
             </td>
         </tr>
     `;
@@ -539,7 +546,8 @@ function renderArmorTable(items) {
                         <th>Enc</th>
                         <th>HP</th>
                         <th>Price</th>
-                        <th>Rules</th>
+                        <th>Rarity</th>
+                        <th>Effect</th>
                     </tr>
                 </thead>
 
@@ -594,7 +602,13 @@ function renderArmorRow(item) {
             </td>
 
             <td>
-                ${renderEquipmentDetails(item)}
+                ${displayEquipmentValue(
+                    item.rarity
+                )}
+            </td>
+
+            <td>
+                ${renderEquipmentEffect(item)}
             </td>
         </tr>
     `;
@@ -616,6 +630,7 @@ function renderGearTable(items) {
                         <th>Name</th>
                         <th>Enc</th>
                         <th>Price</th>
+                        <th>Rarity</th>
                         <th>Effect</th>
                     </tr>
                 </thead>
@@ -653,7 +668,13 @@ function renderGearRow(item) {
             </td>
 
             <td>
-                ${renderEquipmentDetails(item)}
+                ${displayEquipmentValue(
+                    item.rarity
+                )}
+            </td>
+
+            <td>
+                ${renderEquipmentEffect(item)}
             </td>
         </tr>
     `;
@@ -675,6 +696,7 @@ function renderTackTable(items) {
                         <th>Name</th>
                         <th>Enc</th>
                         <th>Price</th>
+                        <th>Rarity</th>
                         <th>Effect</th>
                     </tr>
                 </thead>
@@ -709,7 +731,8 @@ function renderBardingTable(items) {
                         <th>Soak</th>
                         <th>Enc</th>
                         <th>Price</th>
-                        <th>Rules</th>
+                        <th>Rarity</th>
+                        <th>Effect</th>
                     </tr>
                 </thead>
 
@@ -758,7 +781,13 @@ function renderBardingRow(item) {
             </td>
 
             <td>
-                ${renderEquipmentDetails(item)}
+                ${displayEquipmentValue(
+                    item.rarity
+                )}
+            </td>
+
+            <td>
+                ${renderEquipmentEffect(item)}
             </td>
         </tr>
     `;
@@ -810,7 +839,7 @@ function renderMountCard(item) {
                 "Skills"
             )}
 
-            ${renderEquipmentDetailsBlock(
+            ${renderEquipmentEffectBlock(
                 item
             )}
 
@@ -838,6 +867,12 @@ function renderMountPrimaryStats(item) {
         stats,
         "Capacity",
         item.capacity
+    );
+
+    addStatIfPresent(
+        stats,
+        "Rarity",
+        item.rarity
     );
 
 
@@ -889,7 +924,16 @@ function renderVehicleCard(item) {
 
             </div>
 
-            ${renderEquipmentDetailsBlock(
+            <div class="equipment-browser-stat-line">
+                <span>
+                    <strong>Rarity:</strong>
+                    ${displayEquipmentValue(
+                        item.rarity
+                    )}
+                </span>
+            </div>
+
+            ${renderEquipmentEffectBlock(
                 item
             )}
 
@@ -930,6 +974,12 @@ function renderAttachmentCard(item) {
         item.hardPointCost
     );
 
+    addStatIfPresent(
+        stats,
+        "Rarity",
+        item.rarity
+    );
+
 
     return `
         <article class="equipment-browser-card">
@@ -958,7 +1008,7 @@ function renderAttachmentCard(item) {
                     : ""
             }
 
-            ${renderEquipmentDetailsBlock(
+            ${renderEquipmentEffectBlock(
                 item
             )}
 
@@ -996,7 +1046,16 @@ function renderGenericEquipmentList(items) {
 
                             </div>
 
-                            ${renderEquipmentDetailsBlock(
+                            <div class="equipment-browser-stat-line">
+                                <span>
+                                    <strong>Rarity:</strong>
+                                    ${displayEquipmentValue(
+                                        item.rarity
+                                    )}
+                                </span>
+                            </div>
+
+                            ${renderEquipmentEffectBlock(
                                 item
                             )}
 
@@ -1006,6 +1065,65 @@ function renderGenericEquipmentList(items) {
                 .join("")}
 
         </div>
+    `;
+}
+
+
+// ============================================================
+// EFFECT
+// ============================================================
+
+function renderEquipmentEffect(item) {
+    const parts = [];
+
+
+    if (
+        Array.isArray(item.qualities) &&
+        item.qualities.length > 0
+    ) {
+        parts.push(
+            formatEquipmentQualitiesForBrowser(
+                item.qualities
+            )
+        );
+    }
+
+
+    if (
+        typeof item.effect === "string" &&
+        item.effect.trim()
+    ) {
+        parts.push(
+            escapeEquipmentHTML(
+                item.effect
+            )
+        );
+    }
+
+
+    if (parts.length === 0) {
+        return "—";
+    }
+
+
+    return parts.join("<br>");
+}
+
+
+function renderEquipmentEffectBlock(item) {
+    const effect =
+        renderEquipmentEffect(item);
+
+
+    if (effect === "—") {
+        return "";
+    }
+
+
+    return `
+        <p class="equipment-browser-description">
+            ${effect}
+        </p>
     `;
 }
 
@@ -1273,7 +1391,9 @@ function formatWeaponDamageForBrowser(damage) {
         return String(damage.value);
     }
 
-    return displayEquipmentValue(damage.value);
+    return displayEquipmentValue(
+        damage.value
+    );
 }
 
 
