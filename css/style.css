@@ -540,6 +540,100 @@ button:disabled {
 /* ================================================================
    OBLIGATION
    ================================================================ */
+.obligation-assignment-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: end;
+
+    margin-top: 20px;
+    margin-bottom: 12px;
+}
+
+.obligation-assignment-header h3 {
+    margin: 0 0 4px;
+}
+
+.obligation-assignment-header p {
+    margin: 0;
+
+    color: var(--text-muted);
+}
+
+#obligation-entry-list {
+    display: grid;
+    gap: 12px;
+}
+
+.obligation-entry {
+    margin-bottom: 12px;
+    padding: 14px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+.obligation-entry-top {
+    display: grid;
+    grid-template-columns:
+        minmax(180px, 1fr)
+        100px;
+
+    gap: 12px;
+}
+
+.obligation-entry select,
+.obligation-entry input,
+.obligation-entry textarea {
+    width: 100%;
+    max-width: none;
+
+    margin-top: 4px;
+    margin-bottom: 12px;
+
+    padding: 8px 10px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: white;
+    color: var(--text);
+
+    font: inherit;
+}
+
+.obligation-entry textarea {
+    resize: vertical;
+
+    min-height: 80px;
+}
+
+.obligation-warning {
+    margin-top: 14px;
+    padding: 8px 10px;
+
+    border-left: 3px solid var(--accent);
+
+    background: var(--panel-alt);
+
+    font-weight: bold;
+}
+
+.obligation-complete {
+    margin-top: 14px;
+
+    color: var(--text-muted);
+}
+
+.obligation-empty {
+    padding: 14px;
+
+    border: 1px dashed var(--border);
+
+    color: var(--text-muted);
+}
 
 .obligation-step {
     max-width: 850px;
@@ -1279,4 +1373,17 @@ button:disabled {
         width: 100%;
         margin-top: 6px;
     }
+
+   .obligation-assignment-header {
+          display: block;
+      }
+      
+      .obligation-assignment-header button {
+          width: 100%;
+          margin-top: 10px;
+      }
+      
+      .obligation-entry-top {
+          grid-template-columns: 1fr;
+      }
 }
