@@ -2070,67 +2070,86 @@ function renderObligationEntries() {
 }
 
 function bindObligationControls() {
-    const soloCheckbox =
-        document.getElementById(
-            "solo-character"
-        );
+    // ------------------------------------------------------------
+    // SOLO CHARACTER
+    // ------------------------------------------------------------
 
+    const soloCheckbox =
+        document.getElementById("solo-character");
 
     if (soloCheckbox) {
-        soloCheckbox.addEventListener(
-            "change",
-            event => {
+        soloCheckbox.addEventListener("change", event => {
+            setSoloCharacter(event.target.checked);
 
-                const success =
-                    setSoloCharacter(
-                        event.target.checked
-                    );
-
-                if (!success) {
-                    event.target.checked = true;
-                }
-
-                renderObligation();
-                updateSummary();
-            }
-        );
+            renderObligation();
+            updateSummary();
+        });
     }
 
 
-    const xpButton =
-        document.getElementById(
-            "add-obligation-xp"
-        );
+    // ------------------------------------------------------------
+    // TAKE +5 OBLIGATION FOR XP
+    // ------------------------------------------------------------
 
+    const addXpButton =
+        document.getElementById("obligation-add-xp");
 
-    if (xpButton) {
-        xpButton.addEventListener(
-            "click",
-            () => {
-
+    if (addXpButton) {
+        addXpButton.addEventListener("click", () => {
+            const success =
                 addObligationChoice("xp");
 
-                renderObligation();
-                updateSummary();
+            if (!success) {
+                return;
             }
-        );
+
+            renderObligation();
+            updateSummary();
+        });
     }
 
 
-    const wealthButton =
+    // ------------------------------------------------------------
+    // TAKE +5 OBLIGATION FOR WEALTH
+    // ------------------------------------------------------------
+
+    const addWealthButton =
+        document.getElementById("obligation-add-wealth");
+
+    if (addWealthButton) {
+        addWealthButton.addEventListener("click", () => {
+            const success =
+                addObligationChoice("wealth");
+
+            if (!success) {
+                return;
+            }
+
+            renderObligation();
+            updateSummary();
+        });
+    }
+
+
+    // ------------------------------------------------------------
+    // UNDO LAST +5 OBLIGATION CHOICE
+    // ------------------------------------------------------------
+
+    const removeChoiceButton =
         document.getElementById(
-            "add-obligation-wealth"
+            "obligation-remove-choice"
         );
 
-
-    if (wealthButton) {
-        wealthButton.addEventListener(
+    if (removeChoiceButton) {
+        removeChoiceButton.addEventListener(
             "click",
             () => {
+                const success =
+                    removeObligationChoice();
 
-                addObligationChoice(
-                    "wealth"
-                );
+                if (!success) {
+                    return;
+                }
 
                 renderObligation();
                 updateSummary();
@@ -2139,29 +2158,150 @@ function bindObligationControls() {
     }
 
 
-    document
-        .querySelectorAll(
-            ".remove-obligation-choice"
-        )
-        .forEach(button => {
+    // ------------------------------------------------------------
+    // ADD AN OBLIGATION ENTRY
+    // ------------------------------------------------------------
 
-            button.addEventListener(
-                "click",
-                () => {
+    const addEntryButton =
+        document.getElementById(
+            "add-obligation-entry"
+        );
 
-                    const index =
-                        Number(
-                            button.dataset.index
-                        );
+    if (addEntryButton) {
+        addEntryButton.addEventListener(
+            "click",
+            () => {
+                const success =
+                    addObligationEntry();
 
-                    removeObligationChoice(
-                        index
-                    );
-
-                    renderObligation();
-                    updateSummary();
+                if (!success) {
+                    return;
                 }
-            );
+
+                renderObligation();
+                updateSummary();
+            }
+        );
+    }
+
+
+    // ------------------------------------------------------------
+    // EXISTING OBLIGATION ENTRIES
+    // ------------------------------------------------------------
+
+    document
+        .querySelectorAll(".obligation-entry")
+        .forEach(element => {
+            const entryId =
+                Number(element.dataset.entryId);
+
+            const typeSelect =
+                element.querySelector(
+                    ".obligation-entry-type"
+                );
+
+            const valueSelect =
+                element.querySelector(
+                    ".obligation-entry-value"
+                );
+
+            const nameInput =
+                element.querySelector(
+                    ".obligation-entry-name"
+                );
+
+            const descriptionInput =
+                element.querySelector(
+                    ".obligation-entry-description"
+                );
+
+            const removeButton =
+                element.querySelector(
+                    ".remove-obligation-entry"
+                );
+
+
+            if (typeSelect) {
+                typeSelect.addEventListener(
+                    "change",
+                    event => {
+                        setObligationEntryType(
+                            entryId,
+                            event.target.value
+                        );
+                    }
+                );
+            }
+
+
+            if (valueSelect) {
+                valueSelect.addEventListener(
+                    "change",
+                    event => {
+                        const success =
+                            setObligationEntryValue(
+                                entryId,
+                                Number(
+                                    event.target.value
+                                )
+                            );
+
+                        if (!success) {
+                            renderObligation();
+                            return;
+                        }
+
+                        renderObligation();
+                        updateSummary();
+                    }
+                );
+            }
+
+
+            if (nameInput) {
+                nameInput.addEventListener(
+                    "input",
+                    event => {
+                        setObligationEntryName(
+                            entryId,
+                            event.target.value
+                        );
+                    }
+                );
+            }
+
+
+            if (descriptionInput) {
+                descriptionInput.addEventListener(
+                    "input",
+                    event => {
+                        setObligationEntryDescription(
+                            entryId,
+                            event.target.value
+                        );
+                    }
+                );
+            }
+
+
+            if (removeButton) {
+                removeButton.addEventListener(
+                    "click",
+                    () => {
+                        const success =
+                            removeObligationEntry(
+                                entryId
+                            );
+
+                        if (!success) {
+                            return;
+                        }
+
+                        renderObligation();
+                        updateSummary();
+                    }
+                );
+            }
         });
 }
 
