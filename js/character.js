@@ -86,7 +86,10 @@ const character = {
         xpBonus: 0,
         wealthBonus: 0,
         solo: false,
-        choices: []
+        choices: [],
+        entries: [],
+        nextEntryId: 1
+},
     },
 
 
@@ -770,6 +773,15 @@ function addObligationChoice(type) {
 
 
 function canRemoveObligationChoice(index) {
+    const newTotal =
+        getTotalObligation() - 5;
+    
+    if (
+        getAssignedObligation() >
+        newTotal
+    ) {
+        return false;
+    }
     return (
         index >= 0 &&
         index <
@@ -882,6 +894,167 @@ function getXPRemaining() {
     return getTotalAvailableXP() - getXPSpent();
 }
 
+function getObligationType(typeId) {
+    return GAME_DATA.obligationTypes.find(
+        type => type.id === typeId
+    ) || null;
+}
+
+function getObligationEntry(entryId) {
+    return character.obligation.entries.find(
+        entry => entry.id === entryId
+    ) || null;
+}
+
+function getAssignedObligation() {
+    return character.obligation.entries.reduce(
+        (total, entry) => total + entry.value,
+        0
+    );
+}
+
+function getUnassignedObligation() {
+    return getTotalObligation() - getAssignedObligation();
+}
+
+function canAddObligationEntry() {
+    return getUnassignedObligation() >= 5;
+}
+
+function addObligationEntry() {
+    if (!canAddObligationEntry()) {
+        return false;
+    }
+
+    const entry = {
+        id: character.obligation.nextEntryId++,
+        type: "",
+        name: "",
+        description: "",
+        value: 5
+    };
+
+    character.obligation.entries.push(entry);
+
+    return true;
+}
+
+function removeObligationEntry(entryId) {
+    const index =
+        character.obligation.entries.findIndex(
+            entry => entry.id === entryId
+        );
+
+    if (index === -1) {
+        return false;
+    }
+
+    character.obligation.entries.splice(index, 1);
+
+    return true;
+}
+
+function setObligationEntryType(entryId, typeId) {
+    const entry = getObligationEntry(entryId);
+
+    if (!entry) {
+        return false;
+    }
+
+    if (
+        typeId !== "" &&
+        !getObligationType(typeId)
+    ) {
+        return false;
+    }
+
+    entry.type = typeId;
+
+    return true;
+}
+
+function setObligationEntryName(entryId, name) {
+    const entry = getObligationEntry(entryId);
+
+    if (!entry) {
+        return false;
+    }
+
+    entry.name = name;
+
+    return true;
+}
+
+function setObligationEntryDescription(
+    entryId,
+    description
+) {
+    const entry = getObligationEntry(entryId);
+
+    if (!entry) {
+        return false;
+    }
+
+    entry.description = description;
+
+    return true;
+}
+
+function canSetObligationEntryValue(
+    entryId,
+    value
+) {
+    const entry = getObligationEntry(entryId);
+
+    if (!entry) {
+        return false;
+    }
+
+    if (
+        !Number.isInteger(value) ||
+        value < 5 ||
+        value % 5 !== 0
+    ) {
+        return false;
+    }
+
+    const otherAssigned =
+        getAssignedObligation() -
+        entry.value;
+
+    return (
+        otherAssigned + value <=
+        getTotalObligation()
+    );
+}
+
+function setObligationEntryValue(
+    entryId,
+    value
+) {
+    if (
+        !canSetObligationEntryValue(
+            entryId,
+            value
+        )
+    ) {
+        return false;
+    }
+
+    const entry =
+        getObligationEntry(entryId);
+
+    entry.value = value;
+
+    return true;
+}
+
+function isObligationFullyAssigned() {
+    return (
+        getAssignedObligation() ===
+        getTotalObligation()
+    );
+}
 
 // ================================================================
 // OBLIGATION XP RESTRICTION
