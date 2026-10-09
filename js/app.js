@@ -1755,202 +1755,208 @@ function renderTalentCard(
 // ============================================================
 
 function renderObligation() {
-    const content =
+    const container =
         document.getElementById(
             "builder-content"
         );
 
+    const total =
+        getTotalObligation();
 
-    const choices =
-        character.obligation.choices.map(
-            (choice, index) => {
+    const assigned =
+        getAssignedObligation();
 
-                const label =
-                    choice === "xp"
-                        ? "+5 XP"
-                        : "Starting Wealth";
+    const unassigned =
+        getUnassignedObligation();
 
-                return `
-                    <div class="obligation-choice">
-
-                        <span>
-                            +5 Obligation:
-                            <strong>
-                                ${label}
-                            </strong>
-                        </span>
-
-                        <button
-                            type="button"
-                            class="remove-obligation-choice"
-                            data-index="${index}"
-                        >
-                            Remove
-                        </button>
-
-                    </div>
-                `;
-            }
-        ).join("");
-
-
-    const maximum =
+    const maximumAdditional =
         getMaximumAdditionalObligation();
 
+    container.innerHTML = `
+        <div class="obligation-step">
 
-    content.innerHTML = `
-        <h2>Obligation</h2>
+            <h2>Obligation</h2>
 
-        <p>
-            Every character begins with
-            <strong>
-                ${character.obligation.base}
-                Obligation
-            </strong>.
-        </p>
+            <p>
+                Every character begins with 10
+                Obligation. Additional Obligation
+                may be taken during character
+                creation for XP or starting wealth.
+            </p>
 
-        <p>
-            Additional Obligation may be taken
-            during character creation in increments
-            of 5.
-        </p>
+            <div class="obligation-summary">
 
+                <p>
+                    <strong>Total</strong>
+                    ${total}
+                </p>
 
-       <label class="solo-character-option">
-        
-            <input
-                type="checkbox"
-                id="solo-character"
-                ${
-                    character.obligation.solo
-                        ? "checked"
-                        : ""
-                }
-                ${
-                    character.obligation.solo &&
-                    getAdditionalObligation() >
-                        GAME_DATA.characterCreation
-                            .obligation
-                            .normalMaximumIncrease
-                        ? "disabled"
-                        : ""
-                }
-            >
-        
-            Solo Character
-        
-        </label>
+                <p>
+                    <strong>Assigned</strong>
+                    ${assigned}
+                </p>
 
+                <p>
+                    <strong>Unassigned</strong>
+                    ${unassigned}
+                </p>
 
-        <h3>Current Obligation</h3>
+            </div>
 
-        <p>
-            Base:
-            <strong>
-                ${character.obligation.base}
-            </strong>
-        </p>
+            <label class="solo-character-option">
+                <input
+                    type="checkbox"
+                    id="solo-character"
+                    ${
+                        character.obligation.solo
+                            ? "checked"
+                            : ""
+                    }
+                    ${
+                        character.obligation
+                            .additional > 10
+                            ? "disabled"
+                            : ""
+                    }
+                >
+                Solo Character
+            </label>
 
-        <p>
-            Additional:
-            <strong>
-                ${getAdditionalObligation()}
-                /
-                ${maximum}
-            </strong>
-        </p>
+            <p>
+                Additional Obligation:
+                <strong>
+                    ${character.obligation.additional}
+                    /
+                    ${maximumAdditional}
+                </strong>
+            </p>
 
-        <p>
-            Total:
-            <strong>
-                ${getTotalObligation()}
-            </strong>
-        </p>
+            <p>
+                Bonus XP:
+                <strong>
+                    ${character.obligation.xpBonus}
+                </strong>
+                &nbsp; | &nbsp;
+                Bonus Wealth:
+                <strong>
+                    ${character.obligation.wealthBonus}
+                    stags
+                </strong>
+            </p>
 
+            <div class="obligation-actions">
 
-        <h3>Additional Obligation</h3>
+                <button
+                    id="obligation-add-xp"
+                    ${
+                        canAddObligation()
+                            ? ""
+                            : "disabled"
+                    }
+                >
+                    +5 Obligation for +5 XP
+                </button>
 
-        <p>
-            For each 5 additional Obligation,
-            choose either additional XP or
-            additional starting wealth.
-        </p>
+                <button
+                    id="obligation-add-wealth"
+                    ${
+                        canAddObligation()
+                            ? ""
+                            : "disabled"
+                    }
+                >
+                    +5 Obligation for Wealth
+                </button>
 
-        <div class="obligation-controls">
+                <button
+                    id="obligation-remove-choice"
+                    ${
+                        canRemoveObligationChoice()
+                            ? ""
+                            : "disabled"
+                    }
+                >
+                    Undo Last Choice
+                </button>
 
-            <button
-                type="button"
-                id="add-obligation-xp"
-                ${
-                    canAddObligation()
-                        ? ""
-                        : "disabled"
-                }
-            >
-                +5 Obligation:
-                +5 XP
-            </button>
+            </div>
 
-            <button
-                type="button"
-                id="add-obligation-wealth"
-                ${
-                    canAddObligation()
-                        ? ""
-                        : "disabled"
-                }
-            >
-                +5 Obligation:
-                Wealth
-            </button>
+            ${${
+                character.obligation.choices.length > 0
+                    ? `
+                        <div class="obligation-choice-list">
+                            ${character.obligation.choices.map(
+                                choice => `
+                                    <div class="obligation-choice">
+                                        <span>
+                                            +5 Obligation
+                                            —
+                                            ${
+                                                choice === "xp"
+                                                    ? "XP"
+                                                    : "Wealth"
+                                            }
+                                        </span>
+                                    </div>
+                                `
+                            ).join("")}
+                        </div>
+                    `
+                    : ""
+            }
+}
+
+            <hr>
+
+            <div class="obligation-assignment-header">
+
+                <div>
+                    <h3>Obligations</h3>
+
+                    <p>
+                        Divide your total Obligation
+                        among one or more obligations.
+                    </p>
+                </div>
+
+                <button
+                    id="add-obligation-entry"
+                    ${
+                        canAddObligationEntry()
+                            ? ""
+                            : "disabled"
+                    }
+                >
+                    + Add Obligation
+                </button>
+
+            </div>
+
+            <div id="obligation-entry-list">
+                ${renderObligationEntries()}
+            </div>
+
+            ${
+                unassigned > 0
+                    ? `
+                        <p class="obligation-warning">
+                            ${unassigned} Obligation
+                            remains unassigned.
+                        </p>
+                    `
+                    : `
+                        <p class="obligation-complete">
+                            All Obligation has been
+                            assigned.
+                        </p>
+                    `
+            }
 
         </div>
-
-
-        <div class="obligation-choices">
-            ${choices}
-        </div>
-
-
-        <h3>Bonuses</h3>
-
-        <p>
-            Bonus XP:
-            <strong>
-                ${getObligationBonusXP()}
-            </strong>
-        </p>
-
-        <p>
-            Bonus Starting Wealth:
-            <strong>
-                ${character.obligation.wealthBonus
-                    .toLocaleString()}
-                silver stags
-            </strong>
-        </p>
-
-        <p>
-            Total Starting Wealth:
-            <strong>
-                ${getStartingWealth()
-                    .toLocaleString()}
-                silver stags
-            </strong>
-        </p>
-
-        <p>
-            XP Remaining:
-            <strong>
-                ${getXPRemaining()}
-            </strong>
-        </p>
     `;
-
 
     bindObligationControls();
 }
-
 
 function bindObligationControls() {
     const soloCheckbox =
