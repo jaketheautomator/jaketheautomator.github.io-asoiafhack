@@ -480,7 +480,7 @@ function renderWeaponRow(item) {
             </td>
 
             <td>
-                ${displayEquipmentValue(
+                ${formatWeaponDamageForBrowser(
                     item.damage
                 )}
             </td>
@@ -1256,6 +1256,26 @@ function formatEquipmentKey(key) {
 // ============================================================
 // VALUE DISPLAY
 // ============================================================
+
+function formatWeaponDamageForBrowser(damage) {
+    if (
+        !damage ||
+        damage.value === undefined
+    ) {
+        return "—";
+    }
+
+    if (damage.type === "brawn-plus") {
+        return `+${damage.value}`;
+    }
+
+    if (damage.type === "fixed") {
+        return String(damage.value);
+    }
+
+    return displayEquipmentValue(damage.value);
+}
+
 
 function displayEquipmentValue(value) {
     if (
