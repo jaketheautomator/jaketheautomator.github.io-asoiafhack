@@ -89,7 +89,6 @@ const character = {
         choices: [],
         entries: [],
         nextEntryId: 1
-},
     },
 
 
