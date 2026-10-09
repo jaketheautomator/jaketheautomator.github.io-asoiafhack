@@ -1387,3 +1387,267 @@ button:disabled {
           grid-template-columns: 1fr;
       }
 }
+
+/* ============================================================
+   TALENT BROWSER
+   ============================================================ */
+
+.browser-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.browser-header h1 {
+    margin-bottom: 6px;
+}
+
+.browser-header p {
+    margin: 0;
+    color: var(--text-muted);
+}
+
+
+/* ------------------------------------------------------------
+   FILTERS
+   ------------------------------------------------------------ */
+
+.talent-browser-controls {
+    display: grid;
+    grid-template-columns:
+        minmax(240px, 2fr)
+        minmax(120px, 0.7fr)
+        minmax(220px, 1.3fr)
+        minmax(140px, 0.8fr);
+    gap: 12px;
+    align-items: end;
+
+    padding: 16px;
+    margin-bottom: 10px;
+
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.talent-browser-controls label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.talent-browser-controls label > span {
+    font-weight: bold;
+}
+
+.talent-browser-controls input,
+.talent-browser-controls select {
+    width: 100%;
+    min-height: 40px;
+    padding: 8px 10px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: white;
+    color: var(--text);
+    font: inherit;
+}
+
+
+/* ------------------------------------------------------------
+   RESULTS SUMMARY
+   ------------------------------------------------------------ */
+
+.talent-browser-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 24px;
+}
+
+#talent-result-count {
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+#talent-clear-filters {
+    padding: 6px 10px;
+}
+
+
+/* ------------------------------------------------------------
+   TIERS
+   ------------------------------------------------------------ */
+
+.talent-browser-tier {
+    margin-bottom: 32px;
+}
+
+.talent-browser-tier > h2 {
+    margin: 0 0 12px;
+    padding-bottom: 6px;
+
+    border-bottom: 2px solid var(--border-dark);
+}
+
+
+/* ------------------------------------------------------------
+   TALENT GRID
+   ------------------------------------------------------------ */
+
+.talent-browser-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(300px, 1fr)
+        );
+    gap: 12px;
+}
+
+
+/* ------------------------------------------------------------
+   TALENT CARDS
+   ------------------------------------------------------------ */
+
+.talent-browser-card {
+    display: flex;
+    flex-direction: column;
+
+    padding: 14px 16px;
+
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.talent-browser-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+
+    margin-bottom: 8px;
+}
+
+.talent-browser-card-header h3 {
+    margin: 0;
+    line-height: 1.2;
+}
+
+.talent-browser-tier-label {
+    flex: 0 0 auto;
+
+    padding: 3px 7px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: var(--panel-alt);
+
+    font-size: 0.8rem;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+
+/* ------------------------------------------------------------
+   TALENT METADATA
+   ------------------------------------------------------------ */
+
+.talent-browser-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+
+    margin-bottom: 10px;
+
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.talent-browser-meta span + span {
+    padding-left: 14px;
+    border-left: 1px solid var(--border);
+}
+
+
+/* ------------------------------------------------------------
+   PREREQUISITES
+   ------------------------------------------------------------ */
+
+.talent-browser-prerequisites {
+    margin-bottom: 8px;
+
+    font-size: 0.9rem;
+}
+
+
+/* ------------------------------------------------------------
+   DESCRIPTION
+   ------------------------------------------------------------ */
+
+.talent-browser-description {
+    margin: 0;
+
+    line-height: 1.45;
+}
+
+
+/* ------------------------------------------------------------
+   EMPTY RESULTS
+   ------------------------------------------------------------ */
+
+.talent-browser-empty {
+    padding: 24px;
+
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+
+    color: var(--text-muted);
+    text-align: center;
+}
+
+
+/* ============================================================
+   TALENT BROWSER — RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1000px) {
+
+    .talent-browser-controls {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .browser-header {
+        display: block;
+    }
+
+    .talent-browser-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .talent-browser-summary {
+        align-items: flex-start;
+    }
+
+    .talent-browser-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .talent-browser-card-header {
+        gap: 8px;
+    }
+
+}
