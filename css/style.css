@@ -1654,3 +1654,324 @@ button:disabled {
     }
 
 }
+
+
+/* ================================================================
+   EQUIPMENT BROWSER
+   ================================================================ */
+
+.equipment-browser {
+    width: 100%;
+}
+
+
+/* ------------------------------------------------
+   FILTERS
+   ------------------------------------------------ */
+
+.equipment-browser-controls {
+    display: grid;
+    grid-template-columns:
+        minmax(240px, 2fr)
+        minmax(180px, 1fr);
+
+    gap: 12px;
+    align-items: end;
+
+    padding: 16px;
+    margin-bottom: 10px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: var(--panel-alt);
+}
+
+.equipment-browser-controls label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.equipment-browser-controls label > span {
+    font-weight: bold;
+}
+
+.equipment-browser-controls input,
+.equipment-browser-controls select {
+    width: 100%;
+    max-width: none;
+    height: 40px;
+
+    margin: 0;
+    padding: 8px 10px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: white;
+    color: var(--text);
+
+    font: inherit;
+}
+
+
+/* ------------------------------------------------
+   RESULTS SUMMARY
+   ------------------------------------------------ */
+
+.equipment-browser-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 24px;
+}
+
+#equipment-result-count {
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+#equipment-clear-filters {
+    padding: 6px 10px;
+}
+
+
+/* ------------------------------------------------
+   CATEGORY SECTIONS
+   ------------------------------------------------ */
+
+.equipment-browser-category {
+    margin-bottom: 32px;
+}
+
+.equipment-browser-category > h2 {
+    margin: 0 0 12px;
+    padding-bottom: 6px;
+
+    border-bottom: 2px solid var(--border-dark);
+}
+
+
+/* ------------------------------------------------
+   TABLES
+   ------------------------------------------------ */
+
+.equipment-browser-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+.equipment-browser-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 0.9rem;
+}
+
+.equipment-browser-table th {
+    padding: 8px 10px;
+
+    border-bottom: 2px solid var(--border-dark);
+
+    background: var(--panel-alt);
+
+    text-align: left;
+    white-space: nowrap;
+}
+
+.equipment-browser-table td {
+    padding: 8px 10px;
+
+    border-bottom: 1px solid var(--border);
+
+    vertical-align: top;
+}
+
+.equipment-browser-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.equipment-browser-table tbody tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.equipment-browser-table tbody tr:hover {
+    background: var(--panel-bg);
+}
+
+.equipment-browser-name {
+    min-width: 130px;
+
+    font-weight: bold;
+}
+
+.equipment-browser-table th:last-child,
+.equipment-browser-table td:last-child {
+    min-width: 220px;
+}
+
+
+/* ------------------------------------------------
+   CARDS
+   ------------------------------------------------ */
+
+.equipment-browser-card-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(300px, 1fr)
+        );
+
+    gap: 12px;
+}
+
+.equipment-browser-card {
+    padding: 14px 16px;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    background: white;
+}
+
+.equipment-browser-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+
+    margin-bottom: 10px;
+}
+
+.equipment-browser-card-header h3 {
+    margin: 0;
+
+    line-height: 1.2;
+}
+
+.equipment-browser-price {
+    flex: 0 0 auto;
+
+    padding: 3px 7px;
+
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius);
+
+    background: var(--panel-alt);
+
+    font-size: 0.85rem;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+
+/* ------------------------------------------------
+   CARD STATS
+   ------------------------------------------------ */
+
+.equipment-browser-stat-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+
+    margin-bottom: 10px;
+
+    font-size: 0.9rem;
+}
+
+.equipment-browser-stat-line > span {
+    white-space: nowrap;
+}
+
+.equipment-browser-object-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 14px;
+
+    margin-bottom: 10px;
+    padding: 8px 10px;
+
+    border: 1px solid var(--border);
+
+    background: var(--panel-alt);
+
+    font-size: 0.9rem;
+}
+
+.equipment-browser-object-stats > strong {
+    width: 100%;
+}
+
+.equipment-browser-object-stats > span {
+    white-space: nowrap;
+}
+
+
+/* ------------------------------------------------
+   DESCRIPTION
+   ------------------------------------------------ */
+
+.equipment-browser-description {
+    margin: 0;
+
+    line-height: 1.45;
+}
+
+
+/* ------------------------------------------------
+   EMPTY RESULTS
+   ------------------------------------------------ */
+
+.equipment-browser-empty {
+    padding: 24px;
+
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+
+    color: var(--text-muted);
+    text-align: center;
+}
+
+
+/* ================================================================
+   EQUIPMENT BROWSER — RESPONSIVE
+   ================================================================ */
+
+@media (max-width: 850px) {
+
+    .equipment-browser-controls {
+        grid-template-columns: 1fr 1fr;
+    }
+
+}
+
+
+@media (max-width: 560px) {
+
+    .equipment-browser-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .equipment-browser-summary {
+        align-items: flex-start;
+    }
+
+    .equipment-browser-card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .equipment-browser-card-header {
+        gap: 8px;
+    }
+
+}
