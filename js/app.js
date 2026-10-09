@@ -9,12 +9,35 @@
 
 let currentStep = "characteristics";
 
-document.addEventListener("DOMContentLoaded", () => {
-    initializeNavigation();
-    initializeNameField();
-    renderCurrentStep();
-    updateSummary();
-});
+document.addEventListener(
+    "DOMContentLoaded",
+    initializeApplication
+);
+
+
+async function initializeApplication() {
+    try {
+        await loadEquipmentData();
+
+        initializeNavigation();
+        initializeNameField();
+        renderCurrentStep();
+        updateSummary();
+    } catch (error) {
+        console.error(
+            "Could not initialize application:",
+            error
+        );
+
+        document.getElementById(
+            "builder-content"
+        ).innerHTML = `
+            <p>
+                Equipment data could not be loaded.
+            </p>
+        `;
+    }
+}
 
 
 // ================================================================

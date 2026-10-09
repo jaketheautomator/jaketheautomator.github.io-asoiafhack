@@ -1,0 +1,26 @@
+id,name,encumbrance,price,rarity,effect
+backpack,Backpack,0.0,50,,Increases the character's Encumbrance Threshold by 4.
+bedroll,Bedroll,1.0,15,,
+blanket,Blanket,1.0,5,,
+small-tent,Small Tent,3.0,30,,
+large-tent,Large Tent,5.0,75,,
+waterskin,Waterskin,0.5,5,,Encumbrance listed assumes the waterskin is full.
+rope,Rope,1.0,5,,
+grappling-hook,Grappling Hook,1.0,10,,
+flint-and-steel,Flint and Steel,0.0,10,,
+torches,Torches,1.0,1,,
+lantern,Lantern,1.0,50,,
+lamp-oil,Lamp Oil,0.0,2,,
+rations,"Rations, One Day",0.0,2,,
+cooking-kit,Cooking Kit,2.0,15,,
+winter-clothing,Winter Clothing,1.0,100,,"When worn, removes up to 2 Setback dice from Survival or Resilience checks caused by cold weather."
+apothecary-kit,Apothecary Kit,2.0,150,,
+healers-kit,Healer's Kit,2.0,100,,
+thieves-tools,Thieves' Tools,1.0,75,,
+climbing-gear,Climbing Gear,1.0,20,,
+hunting-fishing-kit,Hunting & Fishing Kit,2.0,40,,
+navigation-instruments,Navigation Instruments,1.0,100,,
+writing-kit,Writing Kit,1.0,50,,
+crowbar,Crowbar,1.0,10,,
+shovel,Shovel,2.0,10,,
+hammer-pitons,Hammer & Pitons,1.0,10,,
