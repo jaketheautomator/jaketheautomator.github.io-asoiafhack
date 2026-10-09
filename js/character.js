@@ -772,20 +772,24 @@ function addObligationChoice(type) {
 
 
 function canRemoveObligationChoice(index) {
+    if (
+        index < 0 ||
+        index >= character.obligation.choices.length
+    ) {
+        return false;
+    }
+
     const newTotal =
         getTotalObligation() - 5;
-    
+
     if (
         getAssignedObligation() >
         newTotal
     ) {
         return false;
     }
-    return (
-        index >= 0 &&
-        index <
-            character.obligation.choices.length
-    );
+
+    return true;
 }
 
 
