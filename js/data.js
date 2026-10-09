@@ -64,6 +64,60 @@ const GAME_DATA = {
         }
     },
 
+    // ============================================================
+    // OBLIGATION TYPES
+    // ============================================================
+
+    obligationTypes: [
+    {
+        id: "addiction",
+        name: "Addiction"
+    },
+    {
+        id: "betrayal",
+        name: "Betrayal"
+    },
+    {
+        id: "blackmail",
+        name: "Blackmail"
+    },
+    {
+        id: "bounty",
+        name: "Bounty"
+    },
+    {
+        id: "criminal",
+        name: "Criminal"
+    },
+    {
+        id: "debt",
+        name: "Debt"
+    },
+    {
+        id: "dutybound",
+        name: "Dutybound"
+    },
+    {
+        id: "family",
+        name: "Family"
+    },
+    {
+        id: "favor",
+        name: "Favor"
+    },
+    {
+        id: "oath",
+        name: "Oath"
+    },
+    {
+        id: "obsession",
+        name: "Obsession"
+    },
+    {
+        id: "responsibility",
+        name: "Responsibility"
+    }
+],
 
     // ============================================================
     // CHARACTERISTICS
