@@ -1881,7 +1881,7 @@ function renderObligation() {
 
             </div>
 
-            ${${
+            ${
                 character.obligation.choices.length > 0
                     ? `
                         <div class="obligation-choice-list">
@@ -1904,7 +1904,6 @@ function renderObligation() {
                     `
                     : ""
             }
-}
 
             <hr>
 
