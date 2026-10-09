@@ -1,0 +1,7 @@
+id,name,encumbrance,price,rarity,effect
+basic-tack,Bridle & Basic Tack,1,20,,
+riding-saddle,Riding Saddle,3,50,,
+war-saddle,War Saddle,4,150,,
+saddlebags,Saddlebags,2,25,,
+pack-saddle,Pack Saddle,4,40,,
+horseshoes,Horseshoes,0,10,,

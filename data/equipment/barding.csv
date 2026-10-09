@@ -1,0 +1,4 @@
+id,name,defense,soak,encumbrance,price,rarity,effect
+padded-barding,Padded Barding,0,1,4,100,,
+mail-barding,Mail Barding,0,2,6,500,,
+plate-barding,Plate Barding,1,3,8,1500,,
