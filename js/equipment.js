@@ -71,7 +71,32 @@ document.addEventListener(
 
 async function initializeEquipmentBrowser() {
     try {
+        async function initializeEquipmentBrowser() {
+    try {
         await loadEquipmentData();
+
+                bindEquipmentBrowserControls();
+                renderEquipmentBrowser();
+            } catch (error) {
+                console.error(
+                    "Could not initialize equipment browser:",
+                    error
+                );
+
+                const results =
+                    document.getElementById(
+                        "equipment-results"
+                    );
+
+                if (results) {
+                    results.innerHTML = `
+                        <p>
+                            Equipment data could not be loaded.
+                        </p>
+                    `;
+                }
+            }
+        }
 
         bindEquipmentBrowserControls();
         renderEquipmentBrowser();

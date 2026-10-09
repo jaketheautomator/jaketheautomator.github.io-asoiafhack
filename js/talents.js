@@ -31,10 +31,32 @@ document.addEventListener(
 );
 
 
-function initializeTalentBrowser() {
-    populateActivationFilter();
-    bindTalentBrowserControls();
-    renderTalentBrowser();
+async function initializeTalentBrowser() {
+    try {
+        await loadTalentData();
+
+        bindTalentBrowserControls();
+        populateActivationFilter();
+        renderTalentBrowser();
+    } catch (error) {
+        console.error(
+            "Could not initialize talent browser:",
+            error
+        );
+
+        const results =
+            document.getElementById(
+                "talent-results"
+            );
+
+        if (results) {
+            results.innerHTML = `
+                <p>
+                    Talent data could not be loaded.
+                </p>
+            `;
+        }
+    }
 }
 
 

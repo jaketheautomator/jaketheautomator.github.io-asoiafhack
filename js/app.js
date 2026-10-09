@@ -17,7 +17,10 @@ document.addEventListener(
 
 async function initializeApplication() {
     try {
-        await loadEquipmentData();
+        await Promise.all([
+                loadEquipmentData(),
+                loadTalentData()
+            ]);
 
         initializeNavigation();
         initializeNameField();
