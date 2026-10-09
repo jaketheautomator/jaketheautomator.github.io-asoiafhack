@@ -1444,9 +1444,11 @@ button:disabled {
 
 .talent-browser-controls input,
 .talent-browser-controls select {
-    box-sizing: border-box;
     width: 100%;
+    max-width: none;
     height: 40px;
+
+    margin: 0;
     padding: 8px 10px;
 
     border: 1px solid var(--border-dark);
@@ -1455,7 +1457,6 @@ button:disabled {
     background: white;
     color: var(--text);
     font: inherit;
-    line-height: normal;
 }
 
 
