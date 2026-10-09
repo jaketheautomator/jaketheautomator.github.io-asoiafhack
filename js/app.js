@@ -1871,7 +1871,9 @@ function renderObligation() {
                 <button
                     id="obligation-remove-choice"
                     ${
-                        canRemoveObligationChoice()
+                        canRemoveObligationChoice(
+                            character.obligation.choices.length - 1
+                        )
                             ? ""
                             : "disabled"
                     }
@@ -2044,7 +2046,7 @@ function renderObligationEntries() {
                     <input
                         type="text"
                         class="obligation-entry-name"
-                        value="${escapeHtml(entry.name)}"
+                        value="${escapeHTML(entry.name)}"
                         placeholder="Specific obligation"
                     >
                 </label>
@@ -2056,7 +2058,7 @@ function renderObligationEntries() {
                         class="obligation-entry-description"
                         rows="3"
                         placeholder="Describe the obligation..."
-                    >${escapeHtml(entry.description)}</textarea>
+                    >${escapeHTML(entry.description)}</textarea>
                 </label>
 
                 <button
@@ -2145,7 +2147,9 @@ function bindObligationControls() {
             "click",
             () => {
                 const success =
-                    removeObligationChoice();
+                    removeObligationChoice(
+                        character.obligation.choices.length - 1
+                    );
 
                 if (!success) {
                     return;
