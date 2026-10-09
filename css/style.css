@@ -767,6 +767,11 @@ button:disabled {
     max-width: 100%;
 }
 
+
+/* ---------------------------------------------------------------
+   Talent pyramid
+   --------------------------------------------------------------- */
+
 .talent-pyramid-summary {
     display: grid;
     grid-template-columns:
@@ -789,6 +794,11 @@ button:disabled {
     background: var(--panel-alt);
 }
 
+
+/* ---------------------------------------------------------------
+   Talent tiers
+   --------------------------------------------------------------- */
+
 .talent-tier {
     margin-bottom: 24px;
 }
@@ -799,45 +809,141 @@ button:disabled {
     border-bottom: 2px solid var(--accent);
 }
 
-.talent-card {
+
+/* ---------------------------------------------------------------
+   Talent card grid
+   --------------------------------------------------------------- */
+
+.talent-list {
     display: grid;
     grid-template-columns:
-        minmax(150px, 1.1fr)
-        minmax(220px, 2.2fr)
-        auto;
+        repeat(3, minmax(0, 1fr));
 
-    gap: 8px 14px;
-    align-items: center;
+    gap: 12px;
 
-    padding: 10px;
-
-    border-bottom: 1px solid var(--border);
+    align-items: stretch;
 }
 
-.talent-card:first-of-type {
-    border-top: 1px solid var(--border);
+
+/* ---------------------------------------------------------------
+   Talent cards
+   --------------------------------------------------------------- */
+
+.talent-card {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+    padding: 14px;
+
+    background: white;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
 }
 
+.talent-card h3,
 .talent-card h4,
 .talent-card h5 {
+    margin-top: 0;
+}
+
+.talent-browser-card-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: baseline;
+
+    gap: 12px;
+
+    margin-bottom: 8px;
+}
+
+.talent-browser-card-header h3 {
     margin: 0;
 }
 
-.talent-card p {
-    margin: 0;
+.talent-browser-tier-label {
+    flex-shrink: 0;
+
+    color: var(--text-muted);
+
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.talent-browser-meta {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 6px 12px;
+
+    margin-bottom: 8px;
+
+    color: var(--text-muted);
+
     font-size: 0.9rem;
 }
 
+.talent-browser-prerequisites {
+    margin-bottom: 8px;
+
+    font-size: 0.9rem;
+}
+
+.talent-browser-description {
+    margin: 0;
+
+    font-size: 0.9rem;
+}
+
+
+/* ---------------------------------------------------------------
+   Purchase / refund controls
+   --------------------------------------------------------------- */
+
 .talent-controls {
     display: flex;
+
     gap: 6px;
     align-items: center;
+
+    margin-top: auto;
+    padding-top: 12px;
+
+    border-top: 1px solid var(--border);
 }
 
 .talent-controls button {
     min-width: 34px;
 }
 
+
+/* ---------------------------------------------------------------
+   Responsive layout
+   --------------------------------------------------------------- */
+
+@media (max-width: 1000px) {
+    .talent-list {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .talent-list {
+        grid-template-columns: 1fr;
+    }
+
+    .talent-pyramid-summary {
+        grid-template-columns:
+            repeat(5, minmax(60px, 1fr));
+    }
+}
+
+.talent-card.talent-card-purchased {
+    background: #b8ffba;
+}
 
 /* ================================================================
    EQUIPMENT
@@ -1974,4 +2080,15 @@ button:disabled {
         gap: 8px;
     }
 
+}
+# REPORT
+.summary-report-control {
+    margin-top: 16px;
+    padding-top: 12px;
+
+    border-top: 1px solid var(--border);
+}
+
+.summary-report-control button {
+    width: 100%;
 }

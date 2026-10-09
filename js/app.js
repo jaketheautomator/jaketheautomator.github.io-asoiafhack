@@ -24,6 +24,7 @@ async function initializeApplication() {
 
         initializeNavigation();
         initializeNameField();
+        initializeReportButton();
         renderCurrentStep();
         updateSummary();
     } catch (error) {
@@ -40,6 +41,64 @@ async function initializeApplication() {
             </p>
         `;
     }
+    
+}
+
+function initializeReportButton() {
+    const wealthSummary =
+        document.getElementById(
+            "summary-wealth"
+        );
+
+    if (!wealthSummary) {
+        return;
+    }
+
+    const summary =
+        wealthSummary.parentElement;
+
+    const existingButton =
+        document.getElementById(
+            "export-report-button"
+        );
+
+    if (existingButton) {
+        return;
+    }
+
+
+    const buttonContainer =
+        document.createElement("div");
+
+    buttonContainer.className =
+        "summary-report-control";
+
+
+    const button =
+        document.createElement("button");
+
+    button.type =
+        "button";
+
+    button.id =
+        "export-report-button";
+
+    button.textContent =
+        "Export Character Report";
+
+    button.addEventListener(
+        "click",
+        exportCharacterReport
+    );
+
+
+    buttonContainer.appendChild(
+        button
+    );
+
+    summary.appendChild(
+        buttonContainer
+    );
 }
 
 
@@ -1546,6 +1605,11 @@ function renderTalentCard(
             displayTier
         );
 
+    if (purchasedRank !== null) {
+        card.classList.add(
+            "talent-card-purchased"
+        );
+    }
 
     if (purchasedRank !== null) {
 
@@ -1557,7 +1621,7 @@ function renderTalentCard(
                 `Purchased Rank ${purchasedRank}`;
         } else {
             purchased.textContent =
-                "Purchased";
+                "";
         }
 
         metadata.appendChild(purchased);
@@ -1685,7 +1749,7 @@ function renderTalentCard(
             "button";
 
         removeButton.textContent =
-            "−";
+            "Purchased";
 
         removeButton.disabled =
             !canRemoveTalent(
@@ -1744,7 +1808,7 @@ function renderTalentCard(
             "button";
 
         purchaseButton.textContent =
-            `+ ${cost} XP`;
+            `${cost} XP`;
 
         purchaseButton.disabled =
             !canPurchaseTalent(
