@@ -1076,7 +1076,6 @@ function renderGenericEquipmentList(items) {
 function renderEquipmentEffect(item) {
     const parts = [];
 
-
     if (
         Array.isArray(item.qualities) &&
         item.qualities.length > 0
@@ -1088,25 +1087,20 @@ function renderEquipmentEffect(item) {
         );
     }
 
+    const effect =
+        getEquipmentDescription(item);
 
-    if (
-        typeof item.effect === "string" &&
-        item.effect.trim()
-    ) {
+    if (effect) {
         parts.push(
             escapeEquipmentHTML(
-                item.effect
+                effect
             )
         );
     }
 
-
-    if (parts.length === 0) {
-        return "—";
-    }
-
-
-    return parts.join("<br>");
+    return parts.length > 0
+        ? parts.join("<br>")
+        : "—";
 }
 
 
