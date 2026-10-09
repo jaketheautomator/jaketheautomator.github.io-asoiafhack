@@ -1956,6 +1956,118 @@ function renderObligation() {
 
     bindObligationControls();
 }
+function renderObligationEntries() {
+    if (character.obligation.entries.length === 0) {
+        return `
+            <p class="obligation-empty">
+                No obligations assigned yet.
+            </p>
+        `;
+    }
+
+    return character.obligation.entries.map(entry => {
+        const typeOptions =
+            GAME_DATA.obligationTypes.map(type => `
+                <option
+                    value="${type.id}"
+                    ${
+                        entry.type === type.id
+                            ? "selected"
+                            : ""
+                    }
+                >
+                    ${type.name}
+                </option>
+            `).join("");
+
+        const maxValue =
+            entry.value +
+            getUnassignedObligation();
+
+        const valueOptions = [];
+
+        for (
+            let value = 5;
+            value <= maxValue;
+            value += 5
+        ) {
+            valueOptions.push(`
+                <option
+                    value="${value}"
+                    ${
+                        entry.value === value
+                            ? "selected"
+                            : ""
+                    }
+                >
+                    ${value}
+                </option>
+            `);
+        }
+
+        return `
+            <div
+                class="obligation-entry"
+                data-entry-id="${entry.id}"
+            >
+                <div class="obligation-entry-top">
+
+                    <label>
+                        Type
+
+                        <select
+                            class="obligation-entry-type"
+                        >
+                            <option value="">
+                                Select type
+                            </option>
+
+                            ${typeOptions}
+                        </select>
+                    </label>
+
+                    <label>
+                        Value
+
+                        <select
+                            class="obligation-entry-value"
+                        >
+                            ${valueOptions.join("")}
+                        </select>
+                    </label>
+
+                </div>
+
+                <label>
+                    Name
+
+                    <input
+                        type="text"
+                        class="obligation-entry-name"
+                        value="${escapeHtml(entry.name)}"
+                        placeholder="Specific obligation"
+                    >
+                </label>
+
+                <label>
+                    Description
+
+                    <textarea
+                        class="obligation-entry-description"
+                        rows="3"
+                        placeholder="Describe the obligation..."
+                    >${escapeHtml(entry.description)}</textarea>
+                </label>
+
+                <button
+                    class="remove-obligation-entry"
+                >
+                    Remove
+                </button>
+            </div>
+        `;
+    }).join("");
+}
 
 function bindObligationControls() {
     const soloCheckbox =
